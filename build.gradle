@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.diabunity'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
@@ -19,7 +19,7 @@ dependencies {
 
 tasks.jar {
 	manifest {
-		attributes["Main-Class"] = "com.diabunity.diabunityapi.DiabunityApiApplication"
+		attributes["Main-Class"] = "DiabunityApiApplication"
 	}
 }
 
