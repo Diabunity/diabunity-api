@@ -8,7 +8,6 @@ public class DiabunityApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DiabunityApiApplication.class, args);
-
 	}
 
 }
