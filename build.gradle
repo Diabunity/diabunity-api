@@ -12,15 +12,18 @@ repositories {
 	mavenCentral()
 }
 
+
+jar {
+	manifest {
+		attributes(
+				'Main-Class': 'com.diabunity.diabunityapi.DiabunityApiApplication'
+		)
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-tasks.jar {
-	manifest {
-		attributes["Main-Class"] = "DiabunityApiApplication"
-	}
 }
 
 tasks.named('test') {

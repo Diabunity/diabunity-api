@@ -34,4 +34,5 @@ class GreetingControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content").value("Hello, La tute!"));
 	}
+
 }
