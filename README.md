@@ -1,16 +1,16 @@
 # Diabunity-api
 
-##Descripcion📋
+## Descripcion📋
 
-##Instalacion 🔧
+## Instalacion 🔧
 
-##Como Usar⌨️
+## Como Usar⌨️
 
-##Tecnologias utilizadas🛠️
+## Tecnologias utilizadas🛠️
 
-##Wiki 📖
+## Wiki 📖
 
-##Autores ✒️
+## Autores ✒️
 
-##Licencia📄
+## Licencia📄
 
