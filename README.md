@@ -14,6 +14,7 @@
 Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [wiki](https://diabunity.notion.site/diabunity/Diabunity-Wiki-7185945cd5184da6888073089bac148a)
 ## Autores ✒️
 - Dastugue, Matias
+- Deiros, Jeronimo
 - Gonzalez, Ariel
 - Imperatori, Alejandro
 - San Martin, Leonel
