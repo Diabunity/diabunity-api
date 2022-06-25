@@ -1,2 +1,16 @@
 # Diabunity-api
-In order to run you need to have Java 11.
+
+##Descripcion📋
+
+##Instalacion 🔧
+
+##Como Usar⌨️
+
+##Tecnologias utilizadas🛠️
+
+##Wiki 📖
+
+##Autores ✒️
+
+##Licencia📄
+
