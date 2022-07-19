@@ -1,6 +1,7 @@
 package com.diabunity.diabunityapi.models;
 
 import com.diabunity.diabunityapi.utils.DiabetesType;
+import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -24,13 +25,21 @@ public class User {
   @Field
   private DiabetesType type;
 
-  public User(String id, String name, String mail, String password, int age, DiabetesType type) {
+  @Field
+  private int Weight;
+
+  @Field
+  private Date birthDate;
+
+  public User(String id, String name, String mail, String password, int age, DiabetesType type, int weight, Date birthDate) {
     this.id = id;
     this.name = name;
     this.mail = mail;
     this.password = password;
     this.age = age;
     this.type = type;
+    Weight = weight;
+    this.birthDate = birthDate;
   }
 
   public String getId() {
@@ -73,5 +82,21 @@ public class User {
 
   public void setType(DiabetesType type) {
     this.type = type;
+  }
+
+  public int getWeight() {
+    return Weight;
+  }
+
+  public void setWeight(int weight) {
+    Weight = weight;
+  }
+
+  public Date getBirthDate() {
+    return birthDate;
+  }
+
+  public void setBirthDate(Date birthDate) {
+    this.birthDate = birthDate;
   }
 }
