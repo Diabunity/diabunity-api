@@ -42,7 +42,7 @@ public class UserController {
     Optional<User> user = userService.getUser(id);
 
     if (user == null) {
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     return new ResponseEntity<>(user.get(), HttpStatus.CREATED);
