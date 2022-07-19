@@ -2,8 +2,10 @@ package com.diabunity.diabunityapi.models;
 
 import com.diabunity.diabunityapi.utils.DiabetesType;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.stereotype.Repository;
 
 public class User {
 
@@ -17,28 +19,24 @@ public class User {
   private String mail;
 
   @Field
-  private String password;
-
-  @Field
   private int age;
 
   @Field
   private DiabetesType type;
 
   @Field
-  private int Weight;
+  private Integer weight;
 
   @Field
   private Date birthDate;
 
-  public User(String id, String name, String mail, String password, int age, DiabetesType type, int weight, Date birthDate) {
+  public User(String id, String name, String mail, int age, DiabetesType type, int weight, Date birthDate) {
     this.id = id;
     this.name = name;
     this.mail = mail;
-    this.password = password;
     this.age = age;
     this.type = type;
-    Weight = weight;
+    this.weight = weight;
     this.birthDate = birthDate;
   }
 
@@ -62,12 +60,6 @@ public class User {
 
   public void setMail(String mail) { this.mail = mail; }
 
-  public String getPassword() { return password; }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   public int getAge() {
     return age;
   }
@@ -85,11 +77,11 @@ public class User {
   }
 
   public int getWeight() {
-    return Weight;
+    return weight;
   }
 
   public void setWeight(int weight) {
-    Weight = weight;
+    this.weight = weight;
   }
 
   public Date getBirthDate() {
