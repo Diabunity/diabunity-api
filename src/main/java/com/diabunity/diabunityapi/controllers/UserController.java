@@ -18,7 +18,7 @@ public class UserController {
   @Autowired
   private UserService userService;
 
-  @PostMapping("/user")
+  @PostMapping("/users")
   public ResponseEntity<User> createUser(@RequestBody User userData) {
     if(userData.getId().isEmpty()) {
       return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -33,7 +33,7 @@ public class UserController {
     return new ResponseEntity<>(user, HttpStatus.CREATED);
   }
 
-  @GetMapping("/user/{id}")
+  @GetMapping("/users/{id}")
   public ResponseEntity<User> getUser(@PathVariable String id) {
     if(id.isEmpty()) {
       return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
