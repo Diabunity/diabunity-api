@@ -1,20 +1,23 @@
 package com.diabunity.diabunityapi.services;
 
-import com.diabunity.diabunityapi.common.MongoDbStorage;
-import java.util.UUID;
-import org.bson.json.JsonObject;
+import com.diabunity.diabunityapi.models.User;
+import com.diabunity.diabunityapi.repositories.UserRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
 
   @Autowired
-  private MongoDbStorage mongoDbStorage;
+  private UserRepository userRepository;
 
-  public UUID create(final UUID id, final JsonObject userData) {
+  public User createUser(final User newUser) {
+    return userRepository.save(newUser);
+  }
 
-    UUID uuidSaveConfirmation = mongoDbStorage.save(id, userData);
-
-    return uuidSaveConfirmation;
+  public Optional<User> getUser(String id) {
+   return userRepository.findById(id);
   }
 
 }
