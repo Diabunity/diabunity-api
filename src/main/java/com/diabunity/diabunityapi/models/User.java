@@ -2,10 +2,8 @@ package com.diabunity.diabunityapi.models;
 
 import com.diabunity.diabunityapi.utils.DiabetesType;
 import java.util.Date;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.stereotype.Repository;
 
 public class User {
 
@@ -19,25 +17,35 @@ public class User {
   private String mail;
 
   @Field
-  private int age;
+  private Integer age;
 
   @Field
   private DiabetesType type;
 
   @Field
-  private Integer weight;
+  private Double weight;
+
+  @Field
+  private Double height;
 
   @Field
   private Date birthDate;
 
-  public User(String id, String name, String mail, int age, DiabetesType type, int weight, Date birthDate) {
+  @Field
+  private boolean onboarding;
+
+  public User(String id, String name, String mail,
+              Integer age, DiabetesType type, Double weight,
+              Double height, Date birthDate, boolean onboarding) {
     this.id = id;
     this.name = name;
     this.mail = mail;
     this.age = age;
     this.type = type;
     this.weight = weight;
+    this.height = height;
     this.birthDate = birthDate;
+    this.onboarding = onboarding;
   }
 
   public String getId() {
@@ -76,11 +84,11 @@ public class User {
     this.type = type;
   }
 
-  public int getWeight() {
+  public Double getWeight() {
     return weight;
   }
 
-  public void setWeight(int weight) {
+  public void setWeight(Double weight) {
     this.weight = weight;
   }
 
@@ -91,4 +99,25 @@ public class User {
   public void setBirthDate(Date birthDate) {
     this.birthDate = birthDate;
   }
+
+  public boolean isOnboarding() {
+    return onboarding;
+  }
+
+  public void setOnboarding(boolean onboarding) {
+    this.onboarding = onboarding;
+  }
+
+  public void setAge(Integer age) {
+    this.age = age;
+  }
+
+  public Double getHeight() {
+    return height;
+  }
+
+  public void setHeight(Double height) {
+    this.height = height;
+  }
+
 }

@@ -21,10 +21,6 @@ public class UserService {
    return userRepository.findById(id);
   }
 
-  public Optional<User> login(final String mail, final String password) {
-    return userRepository.findUserByMailEqualsAndPasswordEquals(mail, password);
-  }
-
   public List<User> getAllUsers() {
     return userRepository.findAll();
   }
