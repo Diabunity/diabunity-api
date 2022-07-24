@@ -1,6 +1,5 @@
 package com.diabunity.diabunityapi.exceptions;
 
-import com.google.api.gax.rpc.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
