@@ -1,4 +1,4 @@
-package com.diabunity.diabunityapi.utils;
+package com.diabunity.diabunityapi.models;
 
 public enum DiabetesType {
   TYPE1,

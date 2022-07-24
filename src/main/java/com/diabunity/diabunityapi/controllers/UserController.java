@@ -70,17 +70,6 @@ public class UserController {
     return new ResponseEntity<>(user.get(), HttpStatus.CREATED);
   }
 
-  @GetMapping("/users/")
-  public ResponseEntity<List<User>> getAllUser() throws Exception {
-    List<User> users = userService.getAllUsers();
-
-    if (users == null || users.isEmpty()) {
-      throw new Exception("Users were not founded");
-    }
-
-    return new ResponseEntity<>(users, HttpStatus.OK);
-  }
-
   @ExceptionHandler(Exception.class)
   public ResponseEntity handleException(Exception e) {
     return new ResponseEntity<>(e.getMessage() != "" ? e.getMessage() : e.getCause(), HttpStatus.BAD_REQUEST);

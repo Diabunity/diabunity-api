@@ -1,6 +1,5 @@
 package com.diabunity.diabunityapi.models;
 
-import com.diabunity.diabunityapi.utils.DiabetesType;
 import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -11,16 +10,13 @@ public class User {
   private String id;
 
   @Field
-  private String name;
+  private DiabetesType diabetesType;
 
   @Field
-  private String mail;
+  private Date birthDate;
 
   @Field
-  private Integer age;
-
-  @Field
-  private DiabetesType type;
+  private boolean onBoarding;
 
   @Field
   private Double weight;
@@ -28,24 +24,14 @@ public class User {
   @Field
   private Double height;
 
-  @Field
-  private Date birthDate;
-
-  @Field
-  private boolean onboarding;
-
-  public User(String id, String name, String mail,
-              Integer age, DiabetesType type, Double weight,
-              Double height, Date birthDate, boolean onboarding) {
+  public User(String id, DiabetesType diabetesType, Double weight,
+              Double height, Date birthDate, boolean onBoarding) {
     this.id = id;
-    this.name = name;
-    this.mail = mail;
-    this.age = age;
-    this.type = type;
+    this.diabetesType = diabetesType;
     this.weight = weight;
     this.height = height;
     this.birthDate = birthDate;
-    this.onboarding = onboarding;
+    this.onBoarding = onBoarding;
   }
 
   public String getId() {
@@ -56,32 +42,12 @@ public class User {
     this.id = id;
   }
 
-  public String getName() {
-    return name;
+  public DiabetesType getDiabetesType() {
+    return diabetesType;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getMail() { return mail; }
-
-  public void setMail(String mail) { this.mail = mail; }
-
-  public int getAge() {
-    return age;
-  }
-
-  public void setAge(int age) {
-    this.age = age;
-  }
-
-  public DiabetesType getType() {
-    return type;
-  }
-
-  public void setType(DiabetesType type) {
-    this.type = type;
+  public void setDiabetesType(DiabetesType diabetesType) {
+    this.diabetesType = diabetesType;
   }
 
   public Double getWeight() {
@@ -100,16 +66,12 @@ public class User {
     this.birthDate = birthDate;
   }
 
-  public boolean isOnboarding() {
-    return onboarding;
+  public boolean isOnBoarding() {
+    return onBoarding;
   }
 
-  public void setOnboarding(boolean onboarding) {
-    this.onboarding = onboarding;
-  }
-
-  public void setAge(Integer age) {
-    this.age = age;
+  public void setOnBoarding(boolean onBoarding) {
+    this.onBoarding = onBoarding;
   }
 
   public Double getHeight() {
