@@ -1,4 +1,4 @@
-package com.diabunity.diabunityapi.services;
+package com.diabunity.diabunityapi.auth;
 
 import com.diabunity.diabunityapi.DiabunityApiApplication;
 import com.google.auth.oauth2.GoogleCredentials;

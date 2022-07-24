@@ -1,5 +1,6 @@
-package com.diabunity.diabunityapi.services;
+package com.diabunity.diabunityapi.auth;
 
+import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.google.firebase.auth.FirebaseToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +10,6 @@ public class UserAuthService {
 
     @Autowired
     private FirebaseAuthService firebaseAuthService;
-
-    public String batata() throws Exception {
-        String customToken = firebaseAuthService.getAuth().createCustomToken("QB8Xkm6BjTfPoLtUQZ6Lr67m7yk1");
-        return customToken;
-    }
 
     public String getUserIDFromAuthToken(String userToken) throws InvalidUserTokenException {
         try {

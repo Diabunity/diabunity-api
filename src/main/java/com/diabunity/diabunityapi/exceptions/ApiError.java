@@ -7,8 +7,6 @@ import java.util.List;
 
 public class ApiError {
 
-    private static final long serialVersionUID = 1L;
-
     private HttpStatus code;
     private String message;
     private List<String> cause;
