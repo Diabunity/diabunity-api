@@ -36,20 +36,23 @@ public class UserController {
     return new ResponseEntity<>(user, HttpStatus.CREATED);
   }
 
-  @PutMapping("/users")
+  @PutMapping("/users/{id}")
   public ResponseEntity<User> updateUser(HttpServletRequest request,
+                                         @PathVariable(value="id") String uid,
                                          @RequestBody User userData) throws Exception {
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-    if (!authorizedUser.equals(userData.getId())) {
+    if (!authorizedUser.equals(uid)) {
       throw new InvalidUserTokenException();
     }
 
-    Optional<User> user = userService.getUser(userData.getId());
+    Optional<User> user = userService.getUser(uid);
 
     if (user == null) {
-      throw new NotFoundException("User was not founded with used_id " + userData.getId());
+      throw new NotFoundException("User was not founded with used_id " + uid);
     }
+
+    userData.setId(uid);
 
     if (userService.saveUser(userData) == null) {
       throw new Exception("Save user failed.");
@@ -73,7 +76,7 @@ public class UserController {
       throw new NotFoundException("User was not founded by user_id " + uid);
     }
 
-    return new ResponseEntity<>(user.get(), HttpStatus.CREATED);
+    return new ResponseEntity<>(user.get(), HttpStatus.OK);
   }
 
 }
