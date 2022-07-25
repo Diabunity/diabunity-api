@@ -49,7 +49,7 @@ public class UserController {
     Optional<User> user = userService.getUser(uid);
 
     if (user == null) {
-      throw new NotFoundException("User was not founded with used_id " + uid);
+      throw new NotFoundException("User not found with used_id " + uid);
     }
 
     userData.setId(uid);
@@ -73,7 +73,7 @@ public class UserController {
     Optional<User> user = userService.getUser(uid);
 
     if (user == null) {
-      throw new NotFoundException("User was not founded by user_id " + uid);
+      throw new NotFoundException("User not found by user_id " + uid);
     }
 
     return new ResponseEntity<>(user.get(), HttpStatus.OK);
