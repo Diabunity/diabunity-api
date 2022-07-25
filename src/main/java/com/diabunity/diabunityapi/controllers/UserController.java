@@ -1,14 +1,19 @@
 package com.diabunity.diabunityapi.controllers;
 
+import com.diabunity.diabunityapi.exceptions.BadRequestException;
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.exceptions.NotFoundException;
 import com.diabunity.diabunityapi.models.User;
 import com.diabunity.diabunityapi.services.UserService;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +29,13 @@ public class UserController {
 
   @PostMapping("/users")
   public ResponseEntity<User> createUser(HttpServletRequest request,
-                                         @RequestBody User userData) throws Exception {
+                                         @RequestBody User userData,
+                                         BindingResult errors) throws Exception {
+
+    if (errors.hasErrors()) {
+      throw new BadRequestException("Parameters required but not found",
+          errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
+    }
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
     if (!authorizedUser.equals(userData.getId())) {
@@ -39,7 +50,13 @@ public class UserController {
   @PutMapping("/users/{id}")
   public ResponseEntity<User> updateUser(HttpServletRequest request,
                                          @PathVariable(value="id") String uid,
-                                         @RequestBody User userData) throws Exception {
+                                         @Valid @RequestBody User userData,
+                                         BindingResult errors) throws Exception {
+
+    if (errors.hasErrors()) {
+      throw new BadRequestException("Parameters required but not found",
+          errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
+    }
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
     if (!authorizedUser.equals(uid)) {
@@ -54,11 +71,13 @@ public class UserController {
 
     userData.setId(uid);
 
-    if (userService.saveUser(userData) == null) {
+    User updatedUser = userService.saveUser(userData);
+
+    if (updatedUser == null) {
       throw new Exception("Save user failed.");
     }
 
-    return new ResponseEntity<>(user.get(), HttpStatus.CREATED);
+    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
   @GetMapping("/users/{id}")

@@ -22,8 +22,14 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler ( {NotFoundException.class} )
-    public ResponseEntity handleNotFoundException(Exception ex) {
+    public ResponseEntity handleNotFoundException(NotFoundException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
+        return new ResponseEntity<>(apiError, apiError.getCode());
+    }
+
+    @ExceptionHandler ( {BadRequestException.class} )
+    public ResponseEntity handleBadRequestException(BadRequestException ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getCauses());
         return new ResponseEntity<>(apiError, apiError.getCode());
     }
 
