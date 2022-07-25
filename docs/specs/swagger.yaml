@@ -1,0 +1,288 @@
+openapi: 3.0.1
+info:
+  title: Diabunity
+  description: Application to measure glucose with sensor FreeStyle.
+  contact:
+    email: diabunity@gmail.com
+  version: 1.0.0
+externalDocs:
+  description: Wiki
+  url: https://diabunity.notion.site/Diabunity-Wiki-7185945cd5184da6888073089bac148a
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Save user on database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+                diabetes_type:
+                  type: number
+                  format: integer
+                  example: 0
+                  description: 0 -> type 1, 1 -> type 2, 2 -> type 3
+                birth_date:
+                  type: string
+                  format: date
+                  example: 1991-08-03
+                  description: 0 -> type 1, 1 -> type 2, 2 -> type
+                on_boarding:
+                  type: boolean
+                  example: true
+                  description: is true when user watched onboarding
+                weight:
+                  type: number
+                  format: double
+                  example: 94.2
+                height:
+                  type: number
+                  format: double
+                  example: 170.4
+      responses:
+        201:
+          description: User created
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+                  diabetes_type:
+                    type: number
+                    format: integer
+                    example: 0
+                    description: 0 -> type 1, 1 -> type 2, 2 -> type 3
+                  birth_date:
+                    type: string
+                    format: date
+                    example: 1991-08-03
+                    description: 0 -> type 1, 1 -> type 2, 2 -> type
+                  on_boarding:
+                    type: boolean
+                    example: true
+                    description: is true when user watched onboarding
+                  weight:
+                    type: number
+                    format: double
+                    example: 94.2
+                  height:
+                    type: number
+                    format: double
+                    example: 170.4
+        401:
+          description: User token is invalid
+        500:
+          description: Save user failed
+  /users/{id}:
+    put:
+      tags:
+        - Users
+      summary: Update user on database
+      parameters:
+        - name: id
+          in: path
+          description: user id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                diabetes_type:
+                  type: number
+                  format: integer
+                  example: 0
+                  description: 0 -> type 1, 1 -> type 2, 2 -> type 3
+                birth_date:
+                  type: string
+                  format: date
+                  example: 1991-08-03
+                  description: 0 -> type 1, 1 -> type 2, 2 -> type
+                on_boarding:
+                  type: boolean
+                  example: true
+                  description: is true when user watched onboarding
+                weight:
+                  type: number
+                  format: double
+                  example: 94.2
+                height:
+                  type: number
+                  format: double
+                  example: 170.4
+      responses:
+        201:
+          description: User created
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+                  diabetes_type:
+                    type: number
+                    format: integer
+                    example: 0
+                    description: 0 -> type 1, 1 -> type 2, 2 -> type 3
+                  birth_date:
+                    type: string
+                    format: date
+                    example: 1991-08-03
+                    description: 0 -> type 1, 1 -> type 2, 2 -> type
+                  on_boarding:
+                    type: boolean
+                    example: true
+                    description: is true when user watched onboarding
+                  weight:
+                    type: number
+                    format: double
+                    example: 94.2
+                  height:
+                    type: number
+                    format: double
+                    example: 170.4
+        401:
+          description: User token is invalid
+        404:
+          description: User not found
+        500:
+          description: Save user failed
+    get:
+      tags:
+        - Users
+      summary: get user data from database
+      parameters:
+        - name: id
+          in: path
+          description: user id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+      responses:
+        200:
+          description: User found
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+                  diabetes_type:
+                    type: number
+                    format: integer
+                    example: 0
+                    description: 0 -> type 1, 1 -> type 2, 2 -> type 3
+                  birth_date:
+                    type: string
+                    format: date
+                    example: 1991-08-03
+                    description: 0 -> type 1, 1 -> type 2, 2 -> type
+                  on_boarding:
+                    type: boolean
+                    example: true
+                    description: is true when user watched onboarding
+                  weight:
+                    type: number
+                    format: double
+                    example: 94.2
+                  height:
+                    type: number
+                    format: double
+                    example: 170.4
+        401:
+          description: User token is invalid
+        404:
+          description: User not found
+        500:
+          description: Save user failed
+  /users/{id}/measurements:
+    post:
+      tags:
+        - Measurements
+      summary: Save user measurements
+      parameters:
+        - name: id
+          in: path
+          description: user id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                measurements:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+                      measurement:
+                        type: number
+                        format: double
+                        example: 130.2
+                      timestamp:
+                        type: string
+                        format: date
+                        example: 2022-03-15
+                      source:
+                        type: number
+                        format: integer
+                        example: 0
+                        description: 0 -> manual, 1 -> sensor
+      responses:
+        201:
+          description: Measurements created
+          content:
+            application/json:
+              schema:
+                properties:
+                  measurements:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: 123462ca-c225-46cc-abcd-80c1e0ef80ed
+                        measurement:
+                          type: number
+                          format: double
+                          example: 130.2
+                        timestamp:
+                          type: string
+                          format: date
+                          example: 2022-03-15
+                        source:
+                          type: number
+                          format: integer
+                          example: 0
+                          description: 0 -> manual, 1 -> sensor
+        401:
+          description: User token is invalid
