@@ -6,7 +6,6 @@ import com.diabunity.diabunityapi.exceptions.NotFoundException;
 import com.diabunity.diabunityapi.models.User;
 import com.diabunity.diabunityapi.services.UserService;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
