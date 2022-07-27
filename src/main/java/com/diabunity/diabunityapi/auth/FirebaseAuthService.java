@@ -22,7 +22,7 @@ public class FirebaseAuthService {
     @Bean
     public FirebaseApp getFirebaseApp() throws IOException {
         ClassLoader classloader = DiabunityApiApplication.class.getClassLoader();
-        InputStream inputStream = classloader.getResourceAsStream("/data/FUNDOS.json");
+        InputStream inputStream = classloader.getResourceAsStream("diabunity-dev-firebase-adminsdk-bg41i-bf2a2eb992.json");
 
         File file = new File(Objects.requireNonNull(new InputStreamReader(inputStream));
 
