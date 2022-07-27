@@ -19,6 +19,16 @@
           "Users"
         ],
         "summary": "Save user on database",
+        "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -55,6 +65,16 @@
                     "type": "number",
                     "format": "double",
                     "example": 170.4
+                  },
+                  "glucose_min": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 89
+                  },
+                  "glucose_max": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 121.1
                   }
                 }
               }
@@ -99,6 +119,16 @@
                       "type": "number",
                       "format": "double",
                       "example": 170.4
+                    },
+                    "glucose_min": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 89
+                    },
+                    "glucose_max": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 121.1
                     }
                   }
                 }
@@ -121,6 +151,14 @@
         ],
         "summary": "Update user on database",
         "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "id",
             "in": "path",
@@ -164,6 +202,16 @@
                     "type": "number",
                     "format": "double",
                     "example": 170.4
+                  },
+                  "glucose_min": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 89
+                  },
+                  "glucose_max": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 121.1
                   }
                 }
               }
@@ -208,6 +256,16 @@
                       "type": "number",
                       "format": "double",
                       "example": 170.4
+                    },
+                    "glucose_min": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 89
+                    },
+                    "glucose_max": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 121.1
                     }
                   }
                 }
@@ -231,6 +289,14 @@
         ],
         "summary": "get user data from database",
         "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "id",
             "in": "path",
@@ -281,6 +347,16 @@
                       "type": "number",
                       "format": "double",
                       "example": 170.4
+                    },
+                    "glucose_min": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 89
+                    },
+                    "glucose_max": {
+                      "type": "number",
+                      "format": "double",
+                      "example": 121.1
                     }
                   }
                 }
@@ -306,6 +382,14 @@
         ],
         "summary": "Save user measurements",
         "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "id",
             "in": "path",

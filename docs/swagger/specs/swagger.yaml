@@ -14,6 +14,12 @@ paths:
       tags:
         - Users
       summary: Save user on database
+      parameters:
+        - name: "auth-token"
+          in: "header"
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -45,6 +51,14 @@ paths:
                   type: number
                   format: double
                   example: 170.4
+                glucose_min:
+                  type: number
+                  format: double
+                  example: 89.0
+                glucose_max:
+                  type: number
+                  format: double
+                  example: 121.1
       responses:
         201:
           description: User created
@@ -78,6 +92,14 @@ paths:
                     type: number
                     format: double
                     example: 170.4
+                  glucose_min:
+                    type: number
+                    format: double
+                    example: 89.0
+                  glucose_max:
+                    type: number
+                    format: double
+                    example: 121.1
         401:
           description: User token is invalid
         500:
@@ -88,6 +110,11 @@ paths:
         - Users
       summary: Update user on database
       parameters:
+        - name: "auth-token"
+          in: "header"
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           description: user id
@@ -123,6 +150,14 @@ paths:
                   type: number
                   format: double
                   example: 170.4
+                glucose_min:
+                  type: number
+                  format: double
+                  example: 89.0
+                glucose_max:
+                  type: number
+                  format: double
+                  example: 121.1
       responses:
         201:
           description: User created
@@ -156,6 +191,14 @@ paths:
                     type: number
                     format: double
                     example: 170.4
+                  glucose_min:
+                    type: number
+                    format: double
+                    example: 89.0
+                  glucose_max:
+                    type: number
+                    format: double
+                    example: 121.1
         401:
           description: User token is invalid
         404:
@@ -167,6 +210,11 @@ paths:
         - Users
       summary: get user data from database
       parameters:
+        - name: "auth-token"
+          in: "header"
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           description: user id
@@ -208,6 +256,14 @@ paths:
                     type: number
                     format: double
                     example: 170.4
+                  glucose_min:
+                    type: number
+                    format: double
+                    example: 89.0
+                  glucose_max:
+                    type: number
+                    format: double
+                    example: 121.1
         401:
           description: User token is invalid
         404:
@@ -220,6 +276,11 @@ paths:
         - Measurements
       summary: Save user measurements
       parameters:
+        - name: "auth-token"
+          in: "header"
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           description: user id
