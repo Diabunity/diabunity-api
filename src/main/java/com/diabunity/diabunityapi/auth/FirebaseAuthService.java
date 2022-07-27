@@ -5,6 +5,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,7 +22,9 @@ public class FirebaseAuthService {
     @Bean
     public FirebaseApp getFirebaseApp() throws IOException {
         ClassLoader classloader = DiabunityApiApplication.class.getClassLoader();
-        File file = new File(Objects.requireNonNull(classloader.getSystemResource("diabunity-dev-firebase-adminsdk-bg41i-bf2a2eb992.json")).getFile());
+        InputStream inputStream = classloader.getResourceAsStream("/data/FUNDOS.json");
+
+        File file = new File(Objects.requireNonNull(new InputStreamReader(inputStream));
 
         FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
 
