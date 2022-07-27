@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Swagger {
     @RequestMapping("/swagger")
     public String index(Model modelo) {
-      return "index";
+      return "swagger";
     }
 
 }
