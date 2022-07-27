@@ -22,6 +22,12 @@ public class ApiError {
         this.cause = Arrays.asList(cause);
     }
 
+    public ApiError(HttpStatus code, String description, List<String> cause) {
+        this.code = code;
+        this.message = description;
+        this.cause = cause;
+    }
+
     public HttpStatus getCode() {
         return code;
     }
