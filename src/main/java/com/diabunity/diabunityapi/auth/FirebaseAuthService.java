@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Objects;
 
 @Configuration
 public class FirebaseAuthService {
@@ -20,12 +17,8 @@ public class FirebaseAuthService {
     @Bean
     public FirebaseApp getFirebaseApp() throws IOException {
         ClassLoader classloader = DiabunityApiApplication.class.getClassLoader();
-        File file = new File(Objects.requireNonNull(classloader.getResource("diabunity-dev-firebase-adminsdk-bg41i-bf2a2eb992.json")).getFile());
-
-        FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
-
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setCredentials(GoogleCredentials.fromStream(classloader.getResourceAsStream("diabunity-dev-firebase-adminsdk-bg41i-bf2a2eb992.json")))
                 .build();
 
         FirebaseApp.initializeApp(options);
