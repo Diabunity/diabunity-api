@@ -453,7 +453,7 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "id": {
+                          "user_id": {
                             "type": "string",
                             "format": "uuid",
                             "example": "123462ca-c225-46cc-abcd-80c1e0ef80ed"
@@ -484,6 +484,103 @@
           },
           "401": {
             "description": "User token is invalid"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "get user measurements",
+        "parameters": [
+          {
+            "name": "auth-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "user id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123462ca-c225-46cc-abcd-80c1e0ef80ed"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "date from",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2022-01-01T00:00:00.000Z"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "date from",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2022-12-31T00:00:00.000Z"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Measurements created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "measurements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "user_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "123462ca-c225-46cc-abcd-80c1e0ef80ed"
+                          },
+                          "measurement": {
+                            "type": "number",
+                            "format": "double",
+                            "example": 130.2
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2022-03-15T00:00:00.000Z"
+                          },
+                          "source": {
+                            "type": "number",
+                            "format": "integer",
+                            "example": 0,
+                            "description": "0 -> manual, 1 -> sensor"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User token is invalid"
+          },
+          "404": {
+            "description": "Measurements not found"
           }
         }
       }
