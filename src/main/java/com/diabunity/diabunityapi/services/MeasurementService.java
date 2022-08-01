@@ -2,6 +2,7 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.Measurement;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,4 +17,7 @@ public class MeasurementService {
      return measurementRepository.saveAll(measurements);
   }
 
+  public List<Measurement> getAllByUserId(String id, LocalDateTime from, LocalDateTime to) {
+    return measurementRepository.findAllByUserIdAndTimestampBetween(id, from, to);
+  }
 }
