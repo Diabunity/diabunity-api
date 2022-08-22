@@ -587,6 +587,21 @@
                           }
                         }
                       }
+                    },
+                    "avg": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "format": "double",
+                          "example": 50.3
+                        },
+                        "status": {
+                          "type": "number",
+                          "format": "int",
+                          "example": 2
+                        }
+                      }
                     }
                   }
                 }

@@ -423,6 +423,19 @@ paths:
                           type: number
                           example: 1
                           description: 0 -> OK, 1 -> WARNING, 2 -> WRONG
+                  avg:
+                    type: object
+                    properties:
+                      value:
+                        type: number
+                        format: double
+                        example: 50.3
+                      status:
+                        type: number
+                        format: int
+                        example: 2
+
+
         401:
           description: User token is invalid
         404:

@@ -71,4 +71,5 @@ public class Measurement {
   public MeasurementStatus getStatus() { return status; }
 
   public void setStatus(MeasurementStatus status) { this.status = status; }
+
 }

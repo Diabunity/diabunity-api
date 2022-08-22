@@ -1,12 +1,11 @@
 package com.diabunity.diabunityapi.controllers;
 
-import static java.text.MessageFormat.format;
 
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.exceptions.NotFoundException;
 import com.diabunity.diabunityapi.models.Measurement;
 import com.diabunity.diabunityapi.models.MeasurementSource;
-import com.diabunity.diabunityapi.models.MeasurementStatus;
+import com.diabunity.diabunityapi.models.MeasurementsResponse;
 import com.diabunity.diabunityapi.models.User;
 import com.diabunity.diabunityapi.services.MeasurementService;
 import com.diabunity.diabunityapi.services.UserService;
@@ -17,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -79,9 +79,14 @@ public class MeasurementController {
         LocalDateTime.ofInstant(to.toInstant(),
             ZoneId.systemDefault()));
 
-    measurementService.setMeasurementsStatus(measurements, minGlucose, maxGlucose);
+    MeasurementsResponse response = new MeasurementsResponse(measurements, null);
 
-    return new ResponseEntity<>(measurements, HttpStatus.OK);
+    if (!measurements.isEmpty()) {
+      measurementService.setMeasurementsStatus(measurements, minGlucose, maxGlucose);
+      response.setAvg(measurementService.getMeasurementAVG(measurements, minGlucose, maxGlucose));
+    }
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
 }
