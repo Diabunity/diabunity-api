@@ -432,6 +432,10 @@
                           "format": "integer",
                           "example": 0,
                           "description": "0 -> manual, 1 -> sensor"
+                        },
+                        "comments": {
+                          "type": "string",
+                          "example": "this measure..."
                         }
                       }
                     }
@@ -473,6 +477,10 @@
                             "format": "integer",
                             "example": 0,
                             "description": "0 -> manual, 1 -> sensor"
+                          },
+                          "comments": {
+                            "type": "string",
+                            "example": "this measure..."
                           }
                         }
                       }
@@ -520,7 +528,7 @@
             "schema": {
               "type": "string",
               "format": "date",
-              "example": "2022-01-01T00:00:00.000Z"
+              "example": "20220101"
             }
           },
           {
@@ -531,7 +539,7 @@
             "schema": {
               "type": "string",
               "format": "date",
-              "example": "2022-12-31T00:00:00.000Z"
+              "example": "2022121"
             }
           }
         ],
@@ -567,6 +575,15 @@
                             "format": "integer",
                             "example": 0,
                             "description": "0 -> manual, 1 -> sensor"
+                          },
+                          "comments": {
+                            "type": "string",
+                            "example": "this measure..."
+                          },
+                          "status": {
+                            "type": "number",
+                            "example": 1,
+                            "description": "0 -> OK, 1 -> WARNING, 2 -> WRONG"
                           }
                         }
                       }
