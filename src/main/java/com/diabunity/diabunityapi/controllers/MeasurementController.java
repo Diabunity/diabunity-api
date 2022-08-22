@@ -81,10 +81,6 @@ public class MeasurementController {
 
     measurementService.setMeasurementsStatus(measurements, minGlucose, maxGlucose);
 
-    if (measurements == null || measurements.isEmpty()) {
-      throw new NotFoundException(format("Measurements not found with user id: {0} and date between {1} and {2}", uid, from, to));
-    }
-
     return new ResponseEntity<>(measurements, HttpStatus.OK);
   }
 
