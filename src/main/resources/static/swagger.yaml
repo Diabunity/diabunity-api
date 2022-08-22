@@ -316,6 +316,9 @@ paths:
                         format: integer
                         example: 0
                         description: 0 -> manual, 1 -> sensor
+                      comments:
+                        type: string
+                        example: "this measure..."
       responses:
         201:
           description: Measurements created
@@ -345,6 +348,9 @@ paths:
                           format: integer
                           example: 0
                           description: 0 -> manual, 1 -> sensor
+                        comments:
+                          type: string
+                          example: "this measure..."
         401:
           description: User token is invalid
     get:
@@ -410,6 +416,9 @@ paths:
                           format: integer
                           example: 0
                           description: 0 -> manual, 1 -> sensor
+                        comments:
+                          type: string
+                          example: "this measure..."
         401:
           description: User token is invalid
         404:
