@@ -19,11 +19,17 @@ public class Measurement {
   @Field
   private MeasurementSource source;
 
-  public Measurement(String userId, double measurement, LocalDateTime timestamp, MeasurementSource source) {
+  @Field
+  private String comments;
+
+  public Measurement(String userId, double measurement,
+                     LocalDateTime timestamp, MeasurementSource source,
+                     String comments) {
     this.userId = userId;
     this.measurement = measurement;
     this.timestamp = timestamp;
     this.source = source;
+    this.comments = comments;
   }
 
   public String getUserId() {
@@ -52,5 +58,9 @@ public class Measurement {
 
   public MeasurementSource getSource() {return source;}
 
-  public void setSource(MeasurementSource source) {this.source = source;}
+  public void setSource(MeasurementSource source) { this.source = source; }
+
+  public String getComments() { return comments; }
+
+  public void setComments(String comments) { this.comments = comments; }
 }
