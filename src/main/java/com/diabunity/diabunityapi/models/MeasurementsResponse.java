@@ -9,9 +9,9 @@ public class MeasurementsResponse {
   private List<Measurement> measurements;
 
   @Field
-  private MeasurementAVG avg;
+  private MeasurementAverage avg;
 
-  public MeasurementsResponse(List<Measurement> measurements, MeasurementAVG avg) {
+  public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg) {
     this.measurements = measurements;
     this.avg = avg;
   }
@@ -24,11 +24,11 @@ public class MeasurementsResponse {
     this.measurements = measurements;
   }
 
-  public MeasurementAVG getAvg() {
+  public MeasurementAverage getAvg() {
     return avg;
   }
 
-  public void setAvg(MeasurementAVG avg) {
+  public void setAvg(MeasurementAverage avg) {
     this.avg = avg;
   }
 }

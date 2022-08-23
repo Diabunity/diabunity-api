@@ -1,7 +1,7 @@
 package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.Measurement;
-import com.diabunity.diabunityapi.models.MeasurementAVG;
+import com.diabunity.diabunityapi.models.MeasurementAverage;
 import com.diabunity.diabunityapi.models.MeasurementStatus;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeasurementService {
 
-  private final static int GLUCOSE_GAP_WARNING = 10;
+  private final static int GLUCOSE_GAP_WARNING = 30;
 
   @Autowired
   private MeasurementRepository measurementRepository;
@@ -25,37 +25,33 @@ public class MeasurementService {
     return measurementRepository.findAllByUserIdAndTimestampBetween(id, from, to);
   }
 
-  public void setMeasurementsStatus(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
+  public void calculateMeasurementsStatus(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
     measurements.forEach(m -> {
       Double actualGlucose = m.getMeasurement();
-      if (actualGlucose >= (maxGlucose - GLUCOSE_GAP_WARNING) && actualGlucose <= maxGlucose)
-        m.setStatus(MeasurementStatus.WARNING);
-      else if (actualGlucose <= (minGlucose + GLUCOSE_GAP_WARNING) && actualGlucose >= minGlucose)
-        m.setStatus(MeasurementStatus.WARNING);
-      else if (actualGlucose < minGlucose || actualGlucose > maxGlucose )
-        m.setStatus(MeasurementStatus.WRONG);
-      else
-        m.setStatus(MeasurementStatus.OK);
+      m.setStatus(calculateStatus(actualGlucose, minGlucose, maxGlucose));
     });
   }
 
-  public MeasurementAVG getMeasurementAVG(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
+  public MeasurementAverage average(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
     Long count = measurements.stream().count();
     Double sum = measurements.stream().mapToDouble(n -> n.getMeasurement()).sum();
 
-    MeasurementAVG avg = new MeasurementAVG();
+    MeasurementAverage avg = new MeasurementAverage();
     avg.setValue(sum/count);
-
-    if (avg.getValue() >= (maxGlucose - GLUCOSE_GAP_WARNING) && avg.getValue() <= maxGlucose)
-      avg.setStatus(MeasurementStatus.WARNING);
-    else if (avg.getValue() <= (minGlucose + GLUCOSE_GAP_WARNING) && avg.getValue() >= minGlucose)
-      avg.setStatus(MeasurementStatus.WARNING);
-    else if (avg.getValue() < minGlucose || avg.getValue() > maxGlucose )
-      avg.setStatus(MeasurementStatus.WRONG);
-    else
-      avg.setStatus(MeasurementStatus.OK);
+    avg.setStatus(calculateStatus(avg.getValue(), minGlucose, maxGlucose));
 
     return avg;
+  }
+
+  private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
+    if (actualGlucose < minGlucose)
+      return MeasurementStatus.LOW;
+    else if (actualGlucose > (maxGlucose + GLUCOSE_GAP_WARNING))
+      return MeasurementStatus.SUPER_HIGH;
+    else if (actualGlucose > maxGlucose)
+      return MeasurementStatus.HIGH;
+    else
+      return MeasurementStatus.OK;
   }
 
 }

@@ -79,8 +79,8 @@ public class MeasurementController {
     MeasurementsResponse response = new MeasurementsResponse(measurements, null);
 
     if (!measurements.isEmpty()) {
-      measurementService.setMeasurementsStatus(measurements, minGlucose, maxGlucose);
-      response.setAvg(measurementService.getMeasurementAVG(measurements, minGlucose, maxGlucose));
+      measurementService.calculateMeasurementsStatus(measurements, minGlucose, maxGlucose);
+      response.setAvg(measurementService.average(measurements, minGlucose, maxGlucose));
     }
 
     return new ResponseEntity<>(response, HttpStatus.OK);

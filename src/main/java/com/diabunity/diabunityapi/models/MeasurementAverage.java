@@ -2,13 +2,13 @@ package com.diabunity.diabunityapi.models;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class MeasurementAVG {
+public class MeasurementAverage {
 
   @Field
   private Double value;
 
   @Field
-  private MeasurementStatus status;
+  private int status;
 
   public Double getValue() {
     return value;
@@ -18,11 +18,11 @@ public class MeasurementAVG {
     this.value = value;
   }
 
-  public MeasurementStatus getStatus() {
+  public int getStatus() {
     return status;
   }
 
   public void setStatus(MeasurementStatus status) {
-    this.status = status;
+    this.status = status.ordinal();
   }
 }

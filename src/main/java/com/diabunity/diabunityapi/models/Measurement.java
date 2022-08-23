@@ -27,7 +27,7 @@ public class Measurement {
   private String comments;
 
   @Field
-  private MeasurementStatus status;
+  private int status;
 
   public Measurement(String userId, double measurement,
                      LocalDateTime timestamp, MeasurementSource source,
@@ -37,7 +37,7 @@ public class Measurement {
     this.timestamp = timestamp;
     this.source = source;
     this.comments = comments;
-    this.status = status;
+    this.status = status.ordinal();
   }
 
   public String getUserId() {
@@ -72,8 +72,8 @@ public class Measurement {
 
   public void setComments(String comments) { this.comments = comments; }
 
-  public MeasurementStatus getStatus() { return status; }
+  public int getStatus() { return status; }
 
-  public void setStatus(MeasurementStatus status) { this.status = status; }
+  public void setStatus(MeasurementStatus status) { this.status = status.ordinal(); }
 
 }

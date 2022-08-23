@@ -1,7 +1,8 @@
 package com.diabunity.diabunityapi.models;
 
 public enum MeasurementStatus {
+  LOW,
   OK,
-  WARNING,
-  WRONG
+  HIGH,
+  SUPER_HIGH
 }
