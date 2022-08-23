@@ -3,6 +3,7 @@ package com.diabunity.diabunityapi.services;
 import com.diabunity.diabunityapi.models.Measurement;
 import com.diabunity.diabunityapi.models.MeasurementAverage;
 import com.diabunity.diabunityapi.models.MeasurementStatus;
+import com.diabunity.diabunityapi.models.PeriodInTarget;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,6 +53,12 @@ public class MeasurementService {
       return MeasurementStatus.HIGH;
     else
       return MeasurementStatus.OK;
+  }
+
+  public PeriodInTarget calculatePeriodInTarget(List<Measurement> m) {
+    Long measurementsOK = m.stream().filter(it -> it.getStatus() == 1).count();
+    Double periodInTargetValue = Double.valueOf(measurementsOK / m.stream().count());
+    return new PeriodInTarget(periodInTargetValue, periodInTargetValue >= 70D ? 1 : 0);
   }
 
 }

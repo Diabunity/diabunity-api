@@ -76,11 +76,12 @@ public class MeasurementController {
         LocalDateTime.ofInstant(to.toInstant(),
             ZoneId.systemDefault()));
 
-    MeasurementsResponse response = new MeasurementsResponse(measurements, null);
+    MeasurementsResponse response = new MeasurementsResponse(measurements, null, null);
 
     if (!measurements.isEmpty()) {
       measurementService.calculateMeasurementsStatus(measurements, minGlucose, maxGlucose);
       response.setAvg(measurementService.average(measurements, minGlucose, maxGlucose));
+      response.setPeriodInTarget(measurementService.calculatePeriodInTarget(measurements));
     }
 
     return new ResponseEntity<>(response, HttpStatus.OK);

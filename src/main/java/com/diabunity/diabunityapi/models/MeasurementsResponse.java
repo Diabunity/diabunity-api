@@ -11,9 +11,14 @@ public class MeasurementsResponse {
   @Field
   private MeasurementAverage avg;
 
-  public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg) {
+  @Field
+  private PeriodInTarget periodInTarget;
+
+  public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg,
+                              PeriodInTarget periodInTarget) {
     this.measurements = measurements;
     this.avg = avg;
+    this.periodInTarget = periodInTarget;
   }
 
   public List<Measurement> getMeasurements() {
@@ -31,4 +36,8 @@ public class MeasurementsResponse {
   public void setAvg(MeasurementAverage avg) {
     this.avg = avg;
   }
+
+  public PeriodInTarget getPeriodInTarget() { return periodInTarget; }
+
+  public void setPeriodInTarget(PeriodInTarget periodInTarget) { this.periodInTarget = periodInTarget; }
 }
