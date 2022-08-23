@@ -1,19 +1,23 @@
 package com.diabunity.diabunityapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
 public class Measurement {
+
   @Field
   @JsonIgnore
+  @Indexed(unique = true)
   private String userId;
 
   @Field
   private Double measurement;
 
   @Field
+  @Indexed(unique = true)
   private LocalDateTime timestamp;
 
   @Field
