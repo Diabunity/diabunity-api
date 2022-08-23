@@ -23,7 +23,7 @@ public class MeasurementService {
   }
 
   public List<Measurement> getAllByUserId(String id, LocalDateTime from, LocalDateTime to) {
-    return measurementRepository.findAllByUserIdAndTimestampBetween(id, from, to);
+    return measurementRepository.findAllByUserIdAndTimestampBetween(id, from, to.plusDays(1));
   }
 
   public void calculateMeasurementsStatus(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
