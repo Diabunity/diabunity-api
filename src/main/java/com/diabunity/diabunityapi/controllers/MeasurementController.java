@@ -1,15 +1,18 @@
 package com.diabunity.diabunityapi.controllers;
 
-import static java.text.MessageFormat.format;
 
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.exceptions.NotFoundException;
 import com.diabunity.diabunityapi.models.Measurement;
+import com.diabunity.diabunityapi.models.MeasurementsResponse;
+import com.diabunity.diabunityapi.models.User;
 import com.diabunity.diabunityapi.services.MeasurementService;
+import com.diabunity.diabunityapi.services.UserService;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,6 +30,9 @@ public class MeasurementController {
 
   @Autowired
   private MeasurementService measurementService;
+
+  @Autowired
+  private UserService userService;
 
   @PostMapping("/users/{id}/measurements")
   public Object createMeasurements(HttpServletRequest request,
@@ -55,17 +61,29 @@ public class MeasurementController {
       throw new InvalidUserTokenException();
     }
 
+    Optional<User> user = userService.getUser(uid);
+
+    if(user == null) {
+      throw new NotFoundException("User not found");
+    }
+
+    final Double minGlucose = user.get().getGlucoseMin();
+    final Double maxGlucose = user.get().getGlucoseMax();
+
     List<Measurement> measurements = measurementService.getAllByUserId(uid,
         LocalDateTime.ofInstant(from.toInstant(),
             ZoneId.systemDefault()),
         LocalDateTime.ofInstant(to.toInstant(),
             ZoneId.systemDefault()));
 
-    if (measurements == null || measurements.isEmpty()) {
-      throw new NotFoundException(format("Measurements not found with user id: {0} and date between {1} and {2}", uid, from, to));
+    MeasurementsResponse response = new MeasurementsResponse(measurements, null);
+
+    if (!measurements.isEmpty()) {
+      measurementService.setMeasurementsStatus(measurements, minGlucose, maxGlucose);
+      response.setAvg(measurementService.getMeasurementAVG(measurements, minGlucose, maxGlucose));
     }
 
-    return new ResponseEntity<>(measurements, HttpStatus.OK);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
 }
