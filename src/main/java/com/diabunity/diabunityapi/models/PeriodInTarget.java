@@ -8,7 +8,7 @@ public class PeriodInTarget {
   private Double value;
 
   @Field
-  private int status;
+  private Integer status;
 
   public PeriodInTarget(Double value, int status) {
     this.value = value;

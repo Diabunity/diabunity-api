@@ -1,6 +1,7 @@
 package com.diabunity.diabunityapi.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -26,18 +27,17 @@ public class Measurement {
   @Field
   private String comments;
 
-  @Field
-  private int status;
+  @Transient
+  private MeasurementStatus status;
 
   public Measurement(String userId, double measurement,
                      LocalDateTime timestamp, MeasurementSource source,
-                     String comments, MeasurementStatus status) {
+                     String comments) {
     this.userId = userId;
     this.measurement = measurement;
     this.timestamp = timestamp;
     this.source = source;
     this.comments = comments;
-    this.status = status.ordinal();
   }
 
   public String getUserId() {
@@ -72,8 +72,8 @@ public class Measurement {
 
   public void setComments(String comments) { this.comments = comments; }
 
-  public int getStatus() { return status; }
+  public MeasurementStatus getStatus() { return status; }
 
-  public void setStatus(MeasurementStatus status) { this.status = status.ordinal(); }
+  public void setStatus(MeasurementStatus status) { this.status = status; }
 
 }
