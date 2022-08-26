@@ -25,6 +25,10 @@ public class MeasurementService {
 
   public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to) {
     List<Measurement> measurements =  measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to);
+    if (measurements.isEmpty()) {
+      return new MeasurementsResponse(measurements);
+    }
+
     User user = userService.getUser(userId).get();
 
     final Double minGlucose = user.getGlucoseMin();
