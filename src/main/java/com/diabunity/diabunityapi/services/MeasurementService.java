@@ -3,6 +3,7 @@ package com.diabunity.diabunityapi.services;
 import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class MeasurementService {
     }
 
     public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to) {
-        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to);
+        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, Sort.by(Sort.Direction.DESC, "timestamp"));
         if (measurements.isEmpty()) {
             return new MeasurementsResponse(measurements);
         }

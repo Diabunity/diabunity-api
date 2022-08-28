@@ -19,7 +19,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws InvalidUserTokenException {
-        logger.info("[" + request.getMethod() + "]" + "[" + request.getRequestURI()  + "]");
+        logger.info("[" + request.getMethod() + "]" + "[" + request.getRequestURI() + "]");
+
+        logger.info(userAuthService.batata("ciaqGTzHxb03EqqEiYjOrLvBNM02"));
 
         String authToken = request.getHeader("auth-token");
         String uid = userAuthService.getUserIDFromAuthToken(authToken);

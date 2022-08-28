@@ -13,6 +13,7 @@ import java.io.IOException;
 
 @Configuration
 public class FirebaseAuthService {
+
     @Primary
     @Bean
     public FirebaseApp getFirebaseApp() throws IOException {

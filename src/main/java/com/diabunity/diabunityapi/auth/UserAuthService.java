@@ -11,6 +11,14 @@ public class UserAuthService {
     @Autowired
     private FirebaseAuthService firebaseAuthService;
 
+    public String batata(String userID) throws InvalidUserTokenException {
+        try {
+            return firebaseAuthService.getAuth().createCustomToken(userID);
+        } catch (Exception e) {
+            throw new InvalidUserTokenException(e.getMessage());
+        }
+    }
+
     public String getUserIDFromAuthToken(String userToken) throws InvalidUserTokenException {
         try {
             FirebaseToken decodedToken = firebaseAuthService.getAuth().verifyIdToken(userToken);
