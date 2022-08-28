@@ -25,8 +25,8 @@ public class MeasurementService {
     public List<Measurement> saveAll(List<Measurement> measurements) {
         List<Measurement> measurementsToSave = new ArrayList<>();
         for (Measurement m : measurements) {
-            Optional<Measurement> existingMeasurement = measurementRepository.getByUserIdAndTimestamp(m.getUserId(), m.getTimestamp());
-            if (!existingMeasurement.isPresent()) {
+            Optional<Measurement> retrievedMeasurement = measurementRepository.getByUserIdAndTimestamp(m.getUserId(), m.getTimestamp());
+            if (!retrievedMeasurement.isPresent()) {
                 measurementsToSave.add(m);
             }
             measurementRepository.saveAll(measurementsToSave);
