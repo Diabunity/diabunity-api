@@ -8,7 +8,7 @@ public class MeasurementAverage {
   private Double value;
 
   @Field
-  private int status;
+  private Integer status;
 
   public Double getValue() {
     return value;

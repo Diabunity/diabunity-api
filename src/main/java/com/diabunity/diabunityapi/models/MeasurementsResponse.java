@@ -1,17 +1,13 @@
 package com.diabunity.diabunityapi.models;
 
 import java.util.List;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 public class MeasurementsResponse {
 
-  @Field
   private List<Measurement> measurements;
 
-  @Field
   private MeasurementAverage avg;
 
-  @Field
   private PeriodInTarget periodInTarget;
 
   public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg,
@@ -19,6 +15,10 @@ public class MeasurementsResponse {
     this.measurements = measurements;
     this.avg = avg;
     this.periodInTarget = periodInTarget;
+  }
+
+  public MeasurementsResponse(List<Measurement> measurements) {
+    this.measurements = measurements;
   }
 
   public List<Measurement> getMeasurements() {
