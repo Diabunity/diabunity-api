@@ -10,7 +10,7 @@ public class UserAuthService {
 
     @Autowired
     private FirebaseAuthService firebaseAuthService;
-
+    
     public String getUserIDFromAuthToken(String userToken) throws InvalidUserTokenException {
         try {
             FirebaseToken decodedToken = firebaseAuthService.getAuth().verifyIdToken(userToken);
