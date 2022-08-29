@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MeasurementService {
@@ -23,12 +24,22 @@ public class MeasurementService {
     private MeasurementRepository measurementRepository;
 
     public List<Measurement> saveAll(List<Measurement> measurements) {
+        Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
+
+        LocalDateTime timestampFrom = measurements.get(0).getTimestamp();
+        LocalDateTime timestampTo = measurements.get(measurements.size() - 1).getTimestamp();
+        String userID = measurements.get(0).getUserId();
+
         List<Measurement> measurementsToSave = new ArrayList<>();
-        for (Measurement m : measurements) {
-            Optional<Measurement> retrievedMeasurement = measurementRepository.getByUserIdAndTimestamp(m.getUserId(), m.getTimestamp());
-            if (!retrievedMeasurement.isPresent()) {
+
+        List<Measurement> retrievedMeasurements = measurementRepository.findAllByUserIdAndTimestampBetween(userID, timestampFrom, timestampTo, Sort.by(Sort.Direction.DESC, "timestamp"));
+        measurements.forEach(m -> {
+            if (!retrievedMeasurements.stream().anyMatch(r -> r.getTimestamp().equals(m.getTimestamp()))) {
                 measurementsToSave.add(m);
             }
+        });
+
+        if (!measurementsToSave.isEmpty()) {
             measurementRepository.saveAll(measurementsToSave);
         }
 
