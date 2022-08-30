@@ -62,8 +62,7 @@ public class MeasurementService {
         }
 
         measurements.forEach(m -> {
-            Double actualGlucose = m.getMeasurement();
-            m.setStatus(calculateStatus(actualGlucose, minGlucose, maxGlucose));
+            m.setStatus(calculateStatus(m.getMeasurement(), minGlucose, maxGlucose));
         });
 
         return new MeasurementsResponse(measurements,
@@ -86,26 +85,14 @@ public class MeasurementService {
         Long count = measurements.stream().count();
         Double sum = measurements.stream().mapToDouble(n -> n.getMeasurement()).sum();
 
-        MeasurementAverage avg = new MeasurementAverage();
-        avg.setValue(sum / count);
-        avg.setStatus(calculateStatus(avg.getValue(), minGlucose, maxGlucose));
+        double avg = sum / count;
 
-        return avg;
+        return new MeasurementAverage(avg, calculateStatus(avg, minGlucose, maxGlucose));
     }
 
-    public PeriodInTarget calculatePeriodInTarget(List<Measurement> m) {
-        Long measurementsOK = m.stream().filter(it -> it.getStatus() == MeasurementStatus.OK).count();
-        Double periodInTargetValue = Double.valueOf(measurementsOK / m.stream().count());
-        return new PeriodInTarget(periodInTargetValue, calculateStatusPeriodInTarget(periodInTargetValue));
+    public PeriodInTarget calculatePeriodInTarget(List<Measurement> measurements) {
+        Long measurementsOK = measurements.stream().filter(m -> m.getStatus() == MeasurementStatus.OK).count();
+        double periodInTargetValue = measurementsOK / Double.valueOf(measurements.size());
+        return new PeriodInTarget(periodInTargetValue);
     }
-
-    private PeriodInTargetStatus calculateStatusPeriodInTarget(Double value) {
-        if (value < 50D) {
-            return PeriodInTargetStatus.BAD;
-        } else if (value < 80D) {
-            return PeriodInTargetStatus.STABLE;
-        }
-        return PeriodInTargetStatus.GOOD;
-    }
-
 }
