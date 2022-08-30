@@ -8,9 +8,9 @@ public class PeriodInTarget {
   private Double value;
 
   @Field
-  private Integer status;
+  private PeriodInTargetStatus status;
 
-  public PeriodInTarget(Double value, int status) {
+  public PeriodInTarget(Double value, PeriodInTargetStatus status) {
     this.value = value;
     this.status = status;
   }
@@ -23,11 +23,11 @@ public class PeriodInTarget {
     this.value = value;
   }
 
-  public int getStatus() {
+  public PeriodInTargetStatus getStatus() {
     return status;
   }
 
-  public void setStatus(int status) {
+  public void setStatus(PeriodInTargetStatus status) {
     this.status = status;
   }
 }

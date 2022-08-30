@@ -8,7 +8,7 @@ public class MeasurementAverage {
   private Double value;
 
   @Field
-  private Integer status;
+  private MeasurementStatus status;
 
   public Double getValue() {
     return value;
@@ -18,11 +18,11 @@ public class MeasurementAverage {
     this.value = value;
   }
 
-  public int getStatus() {
+  public MeasurementStatus getStatus() {
     return status;
   }
 
   public void setStatus(MeasurementStatus status) {
-    this.status = status.ordinal();
+    this.status = status;
   }
 }

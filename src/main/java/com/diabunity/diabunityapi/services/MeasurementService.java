@@ -96,7 +96,17 @@ public class MeasurementService {
     public PeriodInTarget calculatePeriodInTarget(List<Measurement> m) {
         Long measurementsOK = m.stream().filter(it -> it.getStatus() == MeasurementStatus.OK).count();
         Double periodInTargetValue = Double.valueOf(measurementsOK / m.stream().count());
-        return new PeriodInTarget(periodInTargetValue, periodInTargetValue >= 70D ? 1 : 0);
+
+        return new PeriodInTarget(periodInTargetValue, calculateStatusPeriodInTarget(periodInTargetValue));
+    }
+
+    private PeriodInTargetStatus calculateStatusPeriodInTarget(Double value) {
+        if (value < 50D) {
+            return PeriodInTargetStatus.BAD;
+        } else if (value < 80D) {
+            return PeriodInTargetStatus.STABLE;
+        }
+        return PeriodInTargetStatus.GOOD;
     }
 
 }
