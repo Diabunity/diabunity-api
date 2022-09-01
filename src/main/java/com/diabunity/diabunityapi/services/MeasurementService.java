@@ -1,16 +1,22 @@
 package com.diabunity.diabunityapi.services;
 
-import com.diabunity.diabunityapi.models.*;
-import com.diabunity.diabunityapi.repositories.MeasurementRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
+import com.diabunity.diabunityapi.models.Measurement;
+import com.diabunity.diabunityapi.models.MeasurementAverage;
+import com.diabunity.diabunityapi.models.MeasurementStatus;
+import com.diabunity.diabunityapi.models.MeasurementsResponse;
+import com.diabunity.diabunityapi.models.PeriodInTarget;
+import com.diabunity.diabunityapi.models.User;
+import com.diabunity.diabunityapi.repositories.MeasurementRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MeasurementService {
@@ -30,20 +36,30 @@ public class MeasurementService {
         LocalDateTime timestampTo = measurements.get(measurements.size() - 1).getTimestamp();
         String userID = measurements.get(0).getUserId();
 
-        List<Measurement> measurementsToSave = new ArrayList<>();
+        List<Measurement> retrievedMeasurements = measurementRepository
+            .findAllByUserIdAndTimestampBetween(userID, timestampFrom, timestampTo, Sort.by(Sort.Direction.DESC, "timestamp"));
 
-        List<Measurement> retrievedMeasurements = measurementRepository.findAllByUserIdAndTimestampBetween(userID, timestampFrom, timestampTo, Sort.by(Sort.Direction.DESC, "timestamp"));
-        measurements.forEach(m -> {
-            if (!retrievedMeasurements.stream().anyMatch(r -> r.getTimestamp().equals(m.getTimestamp()))) {
-                measurementsToSave.add(m);
+        List<Measurement> measurementsToSave = new ArrayList<>();
+        Measurement measurementBefore = null;
+
+        for(Measurement m:measurements) {
+            if (measurementBefore != null
+                && measurementBefore.getMeasurement().equals(m.getMeasurement())
+                && MINUTES.between(measurementBefore.getTimestamp(), m.getTimestamp()) < 15 ) {
+                continue;
+            } else {
+                if (!retrievedMeasurements.stream().anyMatch(r -> r.getTimestamp().equals(m.getTimestamp()))) {
+                    measurementsToSave.add(m);
+                }
+                measurementBefore =  new Measurement(m.getUserId(), m.getMeasurement(), m.getTimestamp(), m.getSource(), m.getComments());
             }
-        });
+        }
 
         if (!measurementsToSave.isEmpty()) {
             measurementRepository.saveAll(measurementsToSave);
         }
 
-        return measurements;
+        return measurementsToSave;
     }
 
     public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to) {
