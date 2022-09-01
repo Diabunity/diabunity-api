@@ -51,7 +51,7 @@ public class MeasurementService {
                 if (!retrievedMeasurements.stream().anyMatch(r -> r.getTimestamp().equals(m.getTimestamp()))) {
                     measurementsToSave.add(m);
                 }
-                measurementBefore =  new Measurement(m.getUserId(), m.getMeasurement(), m.getTimestamp(), m.getSource(), m.getComments());
+                measurementBefore = m;
             }
         }
 
