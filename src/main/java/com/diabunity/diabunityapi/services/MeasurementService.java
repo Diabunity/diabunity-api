@@ -36,7 +36,9 @@ public class MeasurementService {
         List<Measurement> measurementsToSave = new ArrayList<>();
 
         for(Measurement m:measurements) {
-            if (lastMeasurementSaved == null || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())) {
+            if (lastMeasurementSaved == null
+                || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())
+                || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isEqual(m.getTimestamp())) {
                 measurementsToSave.add(m);
                 lastMeasurementSaved = m;
             }
