@@ -13,4 +13,7 @@ import java.util.List;
 public interface MeasurementRepository extends MongoRepository<Measurement, String> {
     @Query(value = "{'userId': ?0, 'timestamp':{ $gte: ?1, $lte: ?2}}")
     List<Measurement> findAllByUserIdAndTimestampBetween(String id, LocalDateTime startDate, LocalDateTime endDate, Sort sort);
+
+    @Query(value = "{'userId': ?0, 'timestamp':{ $gte: ?1, $lte: ?2}}")
+    Measurement findFirstByUserId(Sort sort);
 }

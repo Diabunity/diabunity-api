@@ -1,7 +1,5 @@
 package com.diabunity.diabunityapi.services;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
-
 import com.diabunity.diabunityapi.models.Measurement;
 import com.diabunity.diabunityapi.models.MeasurementAverage;
 import com.diabunity.diabunityapi.models.MeasurementStatus;
@@ -32,26 +30,15 @@ public class MeasurementService {
     public List<Measurement> saveAll(List<Measurement> measurements) {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
-        LocalDateTime timestampFrom = measurements.get(0).getTimestamp();
-        LocalDateTime timestampTo = measurements.get(measurements.size() - 1).getTimestamp();
-        String userID = measurements.get(0).getUserId();
-
-        List<Measurement> retrievedMeasurements = measurementRepository
-            .findAllByUserIdAndTimestampBetween(userID, timestampFrom, timestampTo, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Measurement lastMeasurementSaved = measurementRepository
+            .findFirstByUserId(Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
-        Measurement measurementBefore = null;
 
         for(Measurement m:measurements) {
-            if (measurementBefore != null
-                && measurementBefore.getMeasurement().equals(m.getMeasurement())
-                && MINUTES.between(measurementBefore.getTimestamp(), m.getTimestamp()) < 15 ) {
-                continue;
-            } else {
-                if (!retrievedMeasurements.stream().anyMatch(r -> r.getTimestamp().equals(m.getTimestamp()))) {
-                    measurementsToSave.add(m);
-                }
-                measurementBefore = m;
+            if (lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())) {
+                measurementsToSave.add(m);
+                lastMeasurementSaved = m;
             }
         }
 
