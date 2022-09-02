@@ -31,12 +31,12 @@ public class MeasurementService {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
         Measurement lastMeasurementSaved = measurementRepository
-            .findFirstByUserId(Sort.by(Sort.Direction.DESC, "timestamp"));
+            .findFirstByUserId(measurements.get(0).getUserId(), Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
 
         for(Measurement m:measurements) {
-            if (lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())) {
+            if (lastMeasurementSaved == null || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())) {
                 measurementsToSave.add(m);
                 lastMeasurementSaved = m;
             }
