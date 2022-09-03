@@ -2,6 +2,7 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.Measurement;
 import com.diabunity.diabunityapi.models.MeasurementAverage;
+import com.diabunity.diabunityapi.models.MeasurementSource;
 import com.diabunity.diabunityapi.models.MeasurementStatus;
 import com.diabunity.diabunityapi.models.MeasurementsResponse;
 import com.diabunity.diabunityapi.models.PeriodInTarget;
@@ -37,6 +38,7 @@ public class MeasurementService {
 
         for(Measurement m:measurements) {
             if (lastMeasurementSaved == null
+                || m.getSource().equals(MeasurementSource.MANUAL)
                 || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())
                 || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isEqual(m.getTimestamp())) {
                 measurementsToSave.add(m);
