@@ -39,7 +39,7 @@ public class MeasurementService {
         for(Measurement m:measurements) {
             if (lastMeasurementSaved == null
                 || m.getSource().equals(MeasurementSource.MANUAL)
-                || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp())
+                || (lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp()))
                 || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isEqual(m.getTimestamp())) {
                 measurementsToSave.add(m);
                 lastMeasurementSaved = m;
