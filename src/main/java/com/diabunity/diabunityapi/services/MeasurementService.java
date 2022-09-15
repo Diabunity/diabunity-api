@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +55,12 @@ public class MeasurementService {
         return measurementsToSave;
     }
 
-    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to) {
-        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, Sort.by(Sort.Direction.DESC, "timestamp"));
+    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int offset, int limit) {
+        Pageable page = PageRequest.of(offset, limit,
+            Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, page).getContent();
+
         if (measurements.isEmpty()) {
             return new MeasurementsResponse(measurements);
         }
