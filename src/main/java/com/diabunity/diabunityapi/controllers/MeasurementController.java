@@ -40,8 +40,8 @@ public class MeasurementController {
   @GetMapping("/users/{id}/measurements")
   public ResponseEntity getAllMeasurementsByUserId(HttpServletRequest request,
                                                    @PathVariable(value = "id") String uid,
-                                                   @RequestParam(value = "offset", required=false, defaultValue = "0") int offset,
-                                                   @RequestParam(value = "limit", required=false, defaultValue = "10") int limit,
+                                                   @RequestParam(value = "page", required=false, defaultValue = "0") int page,
+                                                   @RequestParam(value = "size", required=false, defaultValue = "10") int size,
                                                    @RequestParam("from") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                                                    @RequestParam("to")  @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) throws Exception {
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
@@ -49,7 +49,7 @@ public class MeasurementController {
       throw new InvalidUserTokenException();
     }
 
-    MeasurementsResponse response = measurementService.getAllByUserId(uid, from, to, offset, limit);
+    MeasurementsResponse response = measurementService.getAllByUserId(uid, from, to, page, size);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

@@ -56,8 +56,8 @@ public class MeasurementService {
         return measurementsToSave;
     }
 
-    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int offset, int limit) {
-        Pageable pageConfig = PageRequest.of(offset, limit,
+    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int page, int size) {
+        Pageable pageConfig = PageRequest.of(page, size,
             Sort.by(Sort.Direction.DESC, "timestamp"));
 
         Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, pageConfig);
