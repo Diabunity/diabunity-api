@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -56,10 +57,12 @@ public class MeasurementService {
     }
 
     public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int offset, int limit) {
-        Pageable page = PageRequest.of(offset, limit,
+        Pageable pageConfig = PageRequest.of(offset, limit,
             Sort.by(Sort.Direction.DESC, "timestamp"));
 
-        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, page).getContent();
+        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, pageConfig);
+
+        List<Measurement> measurements = pageResult.getContent();
 
         if (measurements.isEmpty()) {
             return new MeasurementsResponse(measurements);
@@ -80,7 +83,9 @@ public class MeasurementService {
 
         return new MeasurementsResponse(measurements,
                 average(measurements, minGlucose, maxGlucose),
-                calculatePeriodInTarget(measurements));
+                calculatePeriodInTarget(measurements),
+                pageResult.getTotalPages(),
+                pageResult.getTotalElements());
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
