@@ -1,6 +1,7 @@
 package com.diabunity.diabunityapi.repositories;
 
 import com.diabunity.diabunityapi.models.Measurement;
+import com.diabunity.diabunityapi.models.MeasurementSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,5 +19,5 @@ public interface MeasurementRepository extends MongoRepository<Measurement, Stri
                                                          LocalDateTime endDate,
                                                          Pageable page);
 
-    Measurement findFirstByUserId(String userId, Sort sort);
+    Measurement findFirstByUserIdAndSource(String userId, MeasurementSource source, Sort sort);
 }
