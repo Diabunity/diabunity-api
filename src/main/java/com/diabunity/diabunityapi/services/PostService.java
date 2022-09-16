@@ -1,9 +1,14 @@
 package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.Post;
+import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
-import java.util.Optional;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,8 +23,13 @@ public class PostService {
     return p;
   }
 
-  public Optional<Post> get(String id) {
-    return postRepository.findById(id);
+  public PostResponse getPrincipalsPosts(LocalDateTime from, LocalDateTime to, int page, int size) {
+    Pageable pageConfig = PageRequest.of(page, size,
+        Sort.by(Sort.Direction.DESC, "timestamp"));
+
+   Page<Post> posts = postRepository.findPostByParentIdIsNull(from, to, pageConfig);
+
+  return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
   }
 
 }

@@ -1,6 +1,6 @@
 package com.diabunity.diabunityapi.models;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -17,13 +17,22 @@ public class Post {
   private String body;
 
   @Field
-  private List<ChildPost> childPostList;
+  private LocalDateTime timestamp;
 
-  public Post(String id, String userId, String body, List<ChildPost> childPostList) {
+  @Field
+  private String parentId;
+
+  @Field
+  private int qtyComments;
+
+  public Post(String id, String userId, String body, LocalDateTime timestamp,
+              String parentId, int qtyComments) {
     this.id = id;
     this.userId = userId;
     this.body = body;
-    this.childPostList = childPostList;
+    this.timestamp = timestamp;
+    this.parentId = parentId;
+    this.qtyComments = qtyComments;
   }
 
   public String getId() {
@@ -50,11 +59,19 @@ public class Post {
     this.body = body;
   }
 
-  public List<ChildPost> getChildPostList() {
-    return childPostList;
+  public String getParentId() {
+    return parentId;
   }
 
-  public void setChildPostList(List<ChildPost> childPostList) {
-    this.childPostList = childPostList;
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
   }
+
+  public int getQtyComments() { return qtyComments; }
+
+  public void setQtyComments(int qtyComments) { this.qtyComments = qtyComments; }
+
+  public LocalDateTime getTimestamp() { return timestamp; }
+
+  public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

@@ -2,13 +2,14 @@ package com.diabunity.diabunityapi.controllers;
 
 import com.diabunity.diabunityapi.exceptions.BadRequestException;
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
-import com.diabunity.diabunityapi.exceptions.NotFoundException;
 import com.diabunity.diabunityapi.models.Post;
+import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.services.PostService;
-import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -46,11 +48,14 @@ public class PostController {
     return new ResponseEntity<>(postSaved, HttpStatus.CREATED);
   }
 
-  @GetMapping("/users/{id}/posts/{id_post}")
-  public Object getPost(HttpServletRequest request,
-                           @PathVariable(value="id") String uid,
-                           @PathVariable(value="id_post") String postId,
-                           BindingResult errors) throws Exception {
+  @GetMapping("/users/{id}/posts")
+  public Object getPosts(HttpServletRequest request,
+                        @PathVariable(value="id") String uid,
+                        @RequestParam(value = "page", required=false, defaultValue = "0") int page,
+                        @RequestParam(value = "size", required=false, defaultValue = "10") int size,
+                        @RequestParam("from") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+                        @RequestParam("to")  @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
+                        BindingResult errors) throws Exception {
 
     if (errors.hasErrors()) {
       throw new BadRequestException("Parameters required but not found",
@@ -63,13 +68,9 @@ public class PostController {
       throw new InvalidUserTokenException();
     }
 
-    Optional<Post> post = postService.get(postId);
+    PostResponse response = postService.getPrincipalsPosts(from, to, page, size);
 
-    if (!post.isPresent()) {
-      throw new NotFoundException("Post not found with id: " + postId);
-    }
-
-    return new ResponseEntity<>(post.get(), HttpStatus.OK);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
 }
