@@ -35,7 +35,7 @@ public class MeasurementService {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
         Measurement lastMeasurementSaved = measurementRepository
-            .findFirstByUserId(measurements.get(0).getUserId(), Sort.by(Sort.Direction.DESC, "timestamp"));
+            .findFirstByUserIdAndSource(measurements.get(0).getUserId(), MeasurementSource.SENSOR, Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
 
