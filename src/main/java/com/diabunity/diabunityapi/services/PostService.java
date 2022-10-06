@@ -10,6 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class PostService {
 
@@ -28,16 +31,18 @@ public class PostService {
 
    Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
 
+   //set quantity of comments for each post
+   posts.get().forEach(post -> {
+     post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+   });
+
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
   }
 
-  public PostResponse getChildPosts(String parentId, int page, int size) {
-    Pageable pageConfig = PageRequest.of(page, size,
-        Sort.by(Sort.Direction.DESC, "timestamp"));
+  public PostResponse getChildPosts(String parentId) {
+    List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
 
-    Page<Post> posts = postRepository.findPostByParentId(parentId, pageConfig);
-
-    return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
+    return new PostResponse(posts, 0, 0);
   }
 
   public void delete(String id) {

@@ -5,8 +5,13 @@ import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.services.PostService;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +33,7 @@ public class PostController {
   @PostMapping("/users/{id}/posts")
   public Object createPost(HttpServletRequest request,
                              @PathVariable(value="id") String uid,
-                             @RequestBody Post post,
+                             @Valid @RequestBody Post post,
                              BindingResult errors) throws Exception {
 
     if (errors.hasErrors()) {
@@ -42,6 +47,10 @@ public class PostController {
       throw new InvalidUserTokenException();
     }
 
+    post.setId(UUID.randomUUID().toString());
+    post.setTimestamp(LocalDateTime.now());
+    post.setUserId(uid);
+
     Post postSaved = postService.save(post);
 
     return new ResponseEntity<>(postSaved, HttpStatus.CREATED);
@@ -51,13 +60,7 @@ public class PostController {
   public Object getPosts(HttpServletRequest request,
                         @PathVariable(value="id") String uid,
                         @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                        @RequestParam(value = "size", required=false, defaultValue = "10") int size,
-                        BindingResult errors) throws Exception {
-
-    if (errors.hasErrors()) {
-      throw new BadRequestException("Parameters required but not found",
-          errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
-    }
+                        @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
@@ -73,15 +76,7 @@ public class PostController {
   @GetMapping("/users/{id}/posts/{post_id}")
   public Object getChildPosts(HttpServletRequest request,
                          @PathVariable(value = "id") String uid,
-                         @PathVariable(value = "post_id") String postId,
-                         @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                         @RequestParam(value = "size", required=false, defaultValue = "10") int size,
-                         BindingResult errors) throws Exception {
-
-    if (errors.hasErrors()) {
-      throw new BadRequestException("Parameters required but not found",
-          errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
-    }
+                         @PathVariable(value = "post_id") String postId) throws Exception {
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
@@ -89,7 +84,7 @@ public class PostController {
       throw new InvalidUserTokenException();
     }
 
-    PostResponse response = postService.getChildPosts(postId, page, size);
+    PostResponse response = postService.getChildPosts(postId);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
@@ -97,15 +92,9 @@ public class PostController {
   @DeleteMapping("/users/{id}/posts/{post_id}")
   public Object deletePost(HttpServletRequest request,
                            @PathVariable(value = "id") String uid,
-                           @PathVariable(value = "post_id") String postId,
-                           BindingResult errors) throws Exception {
+                           @PathVariable(value = "post_id") String postId) throws Exception {
 
-    if (errors.hasErrors()) {
-      throw new BadRequestException("Parameters required but not found",
-          errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
-    }
-
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+   String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
     if (!authorizedUser.equals(uid)) {
       throw new InvalidUserTokenException();
@@ -115,7 +104,5 @@ public class PostController {
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-
-
 
 }
