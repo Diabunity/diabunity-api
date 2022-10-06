@@ -33,7 +33,6 @@ public class Post {
   @NotNull(message = "Image max must not be null.")
   private String image;
 
-  @Field
   private int qtyComments;
 
   public Post(String id, String userId, String body, LocalDateTime timestamp, String parentId, String image, int qtyComments) {

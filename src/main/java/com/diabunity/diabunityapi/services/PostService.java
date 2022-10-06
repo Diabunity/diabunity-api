@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -45,8 +44,15 @@ public class PostService {
     return new PostResponse(posts, 0, 0);
   }
 
-  public void delete(String id) {
-    postRepository.deleteById(id);
+  public boolean delete(String id, String userId) {
+    Post postToDelete = postRepository.findPostByIdAndUserId(id, userId);
+
+    if (postToDelete == null) {
+      return false;
+    }
+
+    postRepository.deletePostByIdAndUserId(id, userId);
+    return true;
   }
 
 }

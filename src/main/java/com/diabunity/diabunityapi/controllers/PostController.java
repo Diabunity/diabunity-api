@@ -56,34 +56,19 @@ public class PostController {
     return new ResponseEntity<>(postSaved, HttpStatus.CREATED);
   }
 
-  @GetMapping("/users/{id}/posts")
+  //get principal posts
+  @GetMapping("/posts")
   public Object getPosts(HttpServletRequest request,
-                        @PathVariable(value="id") String uid,
-                        @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                        @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
-
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-
-    if (!authorizedUser.equals(uid)) {
-      throw new InvalidUserTokenException();
-    }
-
+                         @RequestParam(value = "page", required=false, defaultValue = "0") int page,
+                         @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
     PostResponse response = postService.getPrincipalsPosts(page, size);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @GetMapping("/users/{id}/posts/{post_id}")
-  public Object getChildPosts(HttpServletRequest request,
-                         @PathVariable(value = "id") String uid,
-                         @PathVariable(value = "post_id") String postId) throws Exception {
-
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-
-    if (!authorizedUser.equals(uid)) {
-      throw new InvalidUserTokenException();
-    }
-
+  //get comments
+  @GetMapping("/posts/{post_id}")
+  public Object getChildPosts(@PathVariable(value = "post_id") String postId) throws Exception {
     PostResponse response = postService.getChildPosts(postId);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -100,9 +85,9 @@ public class PostController {
       throw new InvalidUserTokenException();
     }
 
-    postService.delete(postId);
+    boolean result = postService.delete(postId, uid);
 
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(result? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND);
   }
 
 }
