@@ -1,16 +1,24 @@
 package com.diabunity.diabunityapi.services;
 
-import com.diabunity.diabunityapi.models.*;
+import com.diabunity.diabunityapi.models.Measurement;
+import com.diabunity.diabunityapi.models.MeasurementAverage;
+import com.diabunity.diabunityapi.models.MeasurementSource;
+import com.diabunity.diabunityapi.models.MeasurementStatus;
+import com.diabunity.diabunityapi.models.MeasurementsResponse;
+import com.diabunity.diabunityapi.models.PeriodInTarget;
+import com.diabunity.diabunityapi.models.User;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MeasurementService {
@@ -26,28 +34,36 @@ public class MeasurementService {
     public List<Measurement> saveAll(List<Measurement> measurements) {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
-        LocalDateTime timestampFrom = measurements.get(0).getTimestamp();
-        LocalDateTime timestampTo = measurements.get(measurements.size() - 1).getTimestamp();
-        String userID = measurements.get(0).getUserId();
+        Measurement lastMeasurementSaved = measurementRepository
+            .findFirstByUserIdAndSource(measurements.get(0).getUserId(), MeasurementSource.SENSOR, Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
 
-        List<Measurement> retrievedMeasurements = measurementRepository.findAllByUserIdAndTimestampBetween(userID, timestampFrom, timestampTo, Sort.by(Sort.Direction.DESC, "timestamp"));
-        measurements.forEach(m -> {
-            if (!retrievedMeasurements.stream().anyMatch(r -> r.getTimestamp().equals(m.getTimestamp()))) {
+        for(Measurement m:measurements) {
+            if (lastMeasurementSaved == null
+                || m.getSource().equals(MeasurementSource.MANUAL)
+                || (lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp()))
+                || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isEqual(m.getTimestamp())) {
                 measurementsToSave.add(m);
+                lastMeasurementSaved = m;
             }
-        });
+        }
 
         if (!measurementsToSave.isEmpty()) {
             measurementRepository.saveAll(measurementsToSave);
         }
 
-        return measurements;
+        return measurementsToSave;
     }
 
-    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to) {
-        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, Sort.by(Sort.Direction.DESC, "timestamp"));
+    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int page, int size) {
+        Pageable pageConfig = PageRequest.of(page, size,
+            Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, pageConfig);
+
+        List<Measurement> measurements = pageResult.getContent();
+
         if (measurements.isEmpty()) {
             return new MeasurementsResponse(measurements);
         }
@@ -62,13 +78,14 @@ public class MeasurementService {
         }
 
         measurements.forEach(m -> {
-            Double actualGlucose = m.getMeasurement();
-            m.setStatus(calculateStatus(actualGlucose, minGlucose, maxGlucose));
+            m.setStatus(calculateStatus(m.getMeasurement(), minGlucose, maxGlucose));
         });
 
         return new MeasurementsResponse(measurements,
                 average(measurements, minGlucose, maxGlucose),
-                calculatePeriodInTarget(measurements));
+                calculatePeriodInTarget(measurements),
+                pageResult.getTotalPages(),
+                pageResult.getTotalElements());
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
@@ -86,17 +103,14 @@ public class MeasurementService {
         Long count = measurements.stream().count();
         Double sum = measurements.stream().mapToDouble(n -> n.getMeasurement()).sum();
 
-        MeasurementAverage avg = new MeasurementAverage();
-        avg.setValue(sum / count);
-        avg.setStatus(calculateStatus(avg.getValue(), minGlucose, maxGlucose));
+        double avg = sum / count;
 
-        return avg;
+        return new MeasurementAverage(avg, calculateStatus(avg, minGlucose, maxGlucose));
     }
 
-    public PeriodInTarget calculatePeriodInTarget(List<Measurement> m) {
-        Long measurementsOK = m.stream().filter(it -> it.getStatus() == MeasurementStatus.OK).count();
-        Double periodInTargetValue = Double.valueOf(measurementsOK / m.stream().count());
-        return new PeriodInTarget(periodInTargetValue, periodInTargetValue >= 70D ? 1 : 0);
+    public PeriodInTarget calculatePeriodInTarget(List<Measurement> measurements) {
+        Long measurementsOK = measurements.stream().filter(m -> m.getStatus() == MeasurementStatus.OK).count();
+        double periodInTargetValue = measurementsOK / Double.valueOf(measurements.size());
+        return new PeriodInTarget(periodInTargetValue);
     }
-
 }

@@ -4,25 +4,30 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class MeasurementAverage {
 
-  @Field
-  private Double value;
+    @Field
+    private Double value;
 
-  @Field
-  private Integer status;
+    @Field
+    private MeasurementStatus status;
 
-  public Double getValue() {
-    return value;
-  }
+    public MeasurementAverage(Double value, MeasurementStatus status) {
+        this.value = value;
+        this.status = status;
+    }
 
-  public void setValue(Double value) {
-    this.value = value;
-  }
+    public Double getValue() {
+        return value;
+    }
 
-  public int getStatus() {
-    return status;
-  }
+    public void setValue(Double value) {
+        this.value = value;
+    }
 
-  public void setStatus(MeasurementStatus status) {
-    this.status = status.ordinal();
-  }
+    public MeasurementStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MeasurementStatus status) {
+        this.status = status;
+    }
 }
