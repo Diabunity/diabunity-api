@@ -30,12 +30,14 @@ public class Post {
   private String parentId;
 
   @Field
-  @NotNull(message = "Image max must not be null.")
   private String image;
 
   private int qtyComments;
 
-  public Post(String id, String userId, String body, LocalDateTime timestamp, String parentId, String image, int qtyComments) {
+  private String username;
+
+  public Post(String id, String userId, String body, LocalDateTime timestamp, String parentId,
+              String image, int qtyComments, String username) {
     this.id = id;
     this.userId = userId;
     this.body = body;
@@ -43,6 +45,7 @@ public class Post {
     this.parentId = parentId;
     this.image = image;
     this.qtyComments = qtyComments;
+    this.username = username;
   }
 
   public String getId() {
@@ -88,4 +91,12 @@ public class Post {
   public String getImage() { return image; }
 
   public void setImage(String image) { this.image = image; }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
 }

@@ -1,5 +1,6 @@
 package com.diabunity.diabunityapi.services;
 
+import com.diabunity.diabunityapi.auth.UserAuthService;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
@@ -18,6 +19,9 @@ public class PostService {
   @Autowired
   private PostRepository postRepository;
 
+  @Autowired
+  private UserAuthService userAuthService;
+
   public Post save(Post p) {
     postRepository.save(p);
 
@@ -30,9 +34,10 @@ public class PostService {
 
    Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
 
-   //set quantity of comments for each post
+   //set quantity of comments && username for each post
    posts.get().forEach(post -> {
      post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+     post.setUsername(userAuthService.getUserNameById(post.getUserId()));
    });
 
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
@@ -40,6 +45,11 @@ public class PostService {
 
   public PostResponse getChildPosts(String parentId) {
     List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
+
+    //set quantity of username for each comment
+    posts.forEach(post -> {
+      post.setUsername(userAuthService.getUserNameById(post.getUserId()));
+    });
 
     return new PostResponse(posts, 0, 0);
   }
