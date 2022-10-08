@@ -42,6 +42,23 @@ public class PostService {
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
   }
 
+  public PostResponse getFavoritesPost(int page, int size, String userId) {
+    Pageable pageConfig = PageRequest.of(page, size,
+            Sort.by(Sort.Direction.DESC, "timestamp"));
+
+    List<String> postFavorites = favoriteService.getPostsFavoritesByUser(userId);
+
+    Page<Post> posts =  postRepository.findPostByPostIdIsIn(postFavorites, pageConfig);
+
+    posts.get().forEach(post -> {
+      post.setQtyComments(getChildPosts(post.getPostId()).getPosts().size());
+      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getPostId()));
+    });
+
+    return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
+
+  }
+
   public PostResponse getChildPosts(String parentId) {
     List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
 

@@ -16,6 +16,8 @@ public interface PostRepository extends MongoRepository<Post, String> {
 
   List<Post> findPostByParentId(String parentId, Sort sort);
 
+  Page<Post> findPostByPostIdIsIn(List<String> postId, Pageable page);
+
   Post findPostByPostIdAndUserId(String id, String userId);
 
   void deletePostByPostIdAndUserId(String id, String userId);
