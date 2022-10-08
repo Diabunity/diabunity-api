@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +35,7 @@ public class MeasurementService {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
         Measurement lastMeasurementSaved = measurementRepository
-            .findFirstByUserId(measurements.get(0).getUserId(), Sort.by(Sort.Direction.DESC, "timestamp"));
+            .findFirstByUserIdAndSource(measurements.get(0).getUserId(), MeasurementSource.SENSOR, Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
 
@@ -53,8 +56,14 @@ public class MeasurementService {
         return measurementsToSave;
     }
 
-    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to) {
-        List<Measurement> measurements = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, Sort.by(Sort.Direction.DESC, "timestamp"));
+    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int page, int size) {
+        Pageable pageConfig = PageRequest.of(page, size,
+            Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, pageConfig);
+
+        List<Measurement> measurements = pageResult.getContent();
+
         if (measurements.isEmpty()) {
             return new MeasurementsResponse(measurements);
         }
@@ -74,7 +83,9 @@ public class MeasurementService {
 
         return new MeasurementsResponse(measurements,
                 average(measurements, minGlucose, maxGlucose),
-                calculatePeriodInTarget(measurements));
+                calculatePeriodInTarget(measurements),
+                pageResult.getTotalPages(),
+                pageResult.getTotalElements());
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {

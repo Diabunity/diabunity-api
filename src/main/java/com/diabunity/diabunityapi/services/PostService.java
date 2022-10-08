@@ -18,6 +18,9 @@ public class PostService {
   @Autowired
   private PostRepository postRepository;
 
+  @Autowired
+  private FavoriteService favoriteService;
+
   public Post save(Post p) {
     postRepository.save(p);
 
@@ -30,9 +33,10 @@ public class PostService {
 
    Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
 
-   //set quantity of comments for each post
+   //set quantity of comments && favorites users for each post
    posts.get().forEach(post -> {
-     post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+     post.setQtyComments(getChildPosts(post.getPostId()).getPosts().size());
+     post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getPostId()));
    });
 
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
@@ -44,14 +48,14 @@ public class PostService {
     return new PostResponse(posts, 0, 0);
   }
 
-  public boolean delete(String id, String userId) {
-    Post postToDelete = postRepository.findPostByIdAndUserId(id, userId);
+  public boolean delete(String postId, String userId) {
+    Post postToDelete = postRepository.findPostByPostIdAndUserId(postId, userId);
 
     if (postToDelete == null) {
       return false;
     }
 
-    postRepository.deletePostByIdAndUserId(id, userId);
+    postRepository.deletePostByPostIdAndUserId(postId, userId);
     return true;
   }
 
