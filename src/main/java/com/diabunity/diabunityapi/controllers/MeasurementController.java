@@ -3,7 +3,6 @@ package com.diabunity.diabunityapi.controllers;
 
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.Measurement;
-import com.diabunity.diabunityapi.models.MeasurementWrapper;
 import com.diabunity.diabunityapi.models.MeasurementsResponse;
 import com.diabunity.diabunityapi.services.MeasurementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +24,15 @@ public class MeasurementController {
   @PostMapping("/users/{id}/measurements")
   public Object createMeasurements(HttpServletRequest request,
                                    @PathVariable(value="id") String uid,
-                                   @RequestBody MeasurementWrapper measurements) throws Exception {
+                                   @RequestBody List<Measurement> measurements) throws Exception {
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
     if (!authorizedUser.equals(uid)) {
       throw new InvalidUserTokenException();
     }
 
-    measurements.getMeasurements().forEach(m -> m.setUserId(uid));
-    List<Measurement> res = measurementService.saveAll(measurements.getMeasurements());
+    measurements.forEach(m -> m.setUserId(uid));
+    List<Measurement> res = measurementService.saveAll(measurements);
 
     return new ResponseEntity<>(res, HttpStatus.CREATED);
   }

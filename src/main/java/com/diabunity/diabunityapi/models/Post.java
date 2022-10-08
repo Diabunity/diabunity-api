@@ -32,7 +32,6 @@ public class Post {
   private String parentId;
 
   @Field
-  @NotNull(message = "Image max must not be null.")
   private String image;
 
   @JsonProperty("qty_comments")
