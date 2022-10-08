@@ -30,7 +30,7 @@ public class FavoriteController {
       throw new InvalidUserTokenException();
     }
 
-    List<Favorite> response = favoriteService.getFavoritesByUser(uid);
+    List<String> response = favoriteService.getPostsFavoritesByUser(uid);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

@@ -3,6 +3,7 @@ package com.diabunity.diabunityapi.models;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -34,7 +35,11 @@ public class Post {
 
   private int qtyComments;
 
-  public Post(String id, String userId, String body, LocalDateTime timestamp, String parentId, String image, int qtyComments) {
+  private List<String> usersFavorites;
+
+  public Post(String id, String userId, String body,
+              LocalDateTime timestamp, String parentId, String image,
+              int qtyComments, List<String> usersFavorites) {
     this.postId = id;
     this.userId = userId;
     this.body = body;
@@ -42,6 +47,7 @@ public class Post {
     this.parentId = parentId;
     this.image = image;
     this.qtyComments = qtyComments;
+    this.usersFavorites = usersFavorites;
   }
 
   public String getPostId() {
@@ -87,4 +93,8 @@ public class Post {
   public String getImage() { return image; }
 
   public void setImage(String image) { this.image = image; }
+
+  public List<String> getUsersFavorites() { return usersFavorites; }
+
+  public void setUsersFavorites(List<String> usersFavorites) { this.usersFavorites = usersFavorites; }
 }
