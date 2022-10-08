@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,6 +15,7 @@ import javax.validation.constraints.NotNull;
 public class Post {
 
   @Field
+  @Id
   @JsonProperty("post_id")
   private String postId;
 
@@ -40,9 +43,12 @@ public class Post {
   @JsonProperty("users_favorites")
   private List<String> usersFavorites;
 
+  @Field
+  private List<Emoji> emojis;
+
   public Post(String postId, String userId, String body,
               LocalDateTime timestamp, String parentId, String image,
-              int qtyComments, List<String> usersFavorites) {
+              int qtyComments, List<String> usersFavorites, List<Emoji> emojis) {
     this.postId = postId;
     this.userId = userId;
     this.body = body;
@@ -51,6 +57,7 @@ public class Post {
     this.image = image;
     this.qtyComments = qtyComments;
     this.usersFavorites = usersFavorites;
+    this.emojis = emojis;
   }
 
   public String getPostId() {
@@ -100,4 +107,11 @@ public class Post {
   public List<String> getUsersFavorites() { return usersFavorites; }
 
   public void setUsersFavorites(List<String> usersFavorites) { this.usersFavorites = usersFavorites; }
+
+  public List<Emoji> getReactions() {
+    return emojis;
+  }
+  public void setReactions(List<Emoji> emojis) {
+    this.emojis = emojis;
+  }
 }
