@@ -3,7 +3,6 @@ package com.diabunity.diabunityapi.models;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mongodb.lang.Nullable;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class Post {
 
   @Field
-  private String id;
+  private String postId;
 
   @Field
   private String userId;
@@ -36,7 +35,7 @@ public class Post {
   private int qtyComments;
 
   public Post(String id, String userId, String body, LocalDateTime timestamp, String parentId, String image, int qtyComments) {
-    this.id = id;
+    this.postId = id;
     this.userId = userId;
     this.body = body;
     this.timestamp = timestamp;
@@ -45,12 +44,12 @@ public class Post {
     this.qtyComments = qtyComments;
   }
 
-  public String getId() {
-    return id;
+  public String getPostId() {
+    return postId;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setPostId(String postId) {
+    this.postId = postId;
   }
 
   public String getUserId() {

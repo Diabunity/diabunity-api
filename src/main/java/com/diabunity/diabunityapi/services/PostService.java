@@ -32,7 +32,7 @@ public class PostService {
 
    //set quantity of comments for each post
    posts.get().forEach(post -> {
-     post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+     post.setQtyComments(getChildPosts(post.getPostId()).getPosts().size());
    });
 
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
@@ -44,14 +44,14 @@ public class PostService {
     return new PostResponse(posts, 0, 0);
   }
 
-  public boolean delete(String id, String userId) {
-    Post postToDelete = postRepository.findPostByIdAndUserId(id, userId);
+  public boolean delete(String postId, String userId) {
+    Post postToDelete = postRepository.findPostByPostIdAndUserId(postId, userId);
 
     if (postToDelete == null) {
       return false;
     }
 
-    postRepository.deletePostByIdAndUserId(id, userId);
+    postRepository.deletePostByPostIdAndUserId(postId, userId);
     return true;
   }
 
