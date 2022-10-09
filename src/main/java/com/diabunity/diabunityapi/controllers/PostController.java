@@ -62,7 +62,9 @@ public class PostController {
                          @RequestParam(value = "page", required=false, defaultValue = "0") int page,
                          @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
 
-      PostResponse  response = postService.getPrincipalsPosts(page, size);
+      String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+
+      PostResponse  response = postService.getPrincipalsPosts(page, size, authorizedUser);
 
       return new ResponseEntity<>(response, HttpStatus.OK);
   }
@@ -81,6 +83,12 @@ public class PostController {
                          @PathVariable(value = "id") String uid,
                          @RequestParam(value = "page", required=false, defaultValue = "0") int page,
                          @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
+
+    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+
+    if (!authorizedUser.equals(uid)) {
+      throw new InvalidUserTokenException();
+    }
 
     PostResponse response = postService.getFavoritesPost(page, size, uid);
 

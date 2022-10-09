@@ -108,10 +108,10 @@ public class Post {
 
   public void setUsersFavorites(List<String> usersFavorites) { this.usersFavorites = usersFavorites; }
 
-  public List<Emoji> getReactions() {
+  public List<Emoji> getEmojis() {
     return emojis;
   }
-  public void setReactions(List<Emoji> emojis) {
+  public void setEmojis(List<Emoji> emojis) {
     this.emojis = emojis;
   }
 }

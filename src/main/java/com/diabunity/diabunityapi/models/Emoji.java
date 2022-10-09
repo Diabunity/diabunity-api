@@ -1,7 +1,5 @@
 package com.diabunity.diabunityapi.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Emoji {
 
     private Object data;
@@ -12,10 +10,9 @@ public class Emoji {
 
     private int index;
 
-    @JsonProperty("is_selected")
     private boolean isSelected;
 
-    public Emoji(Object data, String emoji, String name, int index, String postId, boolean isSelected) {
+    public Emoji(Object data, String emoji, String name, int index, boolean isSelected) {
         this.data = data;
         this.emoji = emoji;
         this.name = name;

@@ -30,7 +30,7 @@ public class PostService {
     return p;
   }
 
-  public PostResponse getPrincipalsPosts(int page, int size) {
+  public PostResponse getPrincipalsPosts(int page, int size, String userId) {
     Pageable pageConfig = PageRequest.of(page, size,
         Sort.by(Sort.Direction.DESC, "timestamp"));
 
@@ -40,6 +40,17 @@ public class PostService {
    posts.get().forEach(post -> {
      post.setQtyComments(getChildPosts(post.getPostId()).getPosts().size());
      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getPostId()));
+
+     //get emojis for each post and set selected by user
+     List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getPostId());
+     listReactions.stream().forEach(reaction -> {
+       Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getPostId(), reaction.getEmoji());
+       if (optionalEmoji.isPresent()) {
+         reaction.setSelected(true);
+       }
+       post.setEmojis(listReactions);
+     });
+
    });
 
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());

@@ -17,7 +17,7 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
-    @PostMapping("/post/{post_id}/reaction")
+    @PostMapping("/post/{post_id}/reaction/{emoji}")
     public Object saveReaction(HttpServletRequest request,
                                @PathVariable(value="post_id") String postId,
                                @PathVariable(value="emoji") String emoji,
@@ -32,7 +32,7 @@ public class ReactionController {
         return new ResponseEntity<>(reactionResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/post/{post_id}/reaction")
+    @DeleteMapping("/post/{post_id}/reaction/{emoji}")
     public Object deleteReaction(HttpServletRequest request,
                                @PathVariable(value="post_id") String postId,
                                @PathVariable(value="emoji") String emoji,
