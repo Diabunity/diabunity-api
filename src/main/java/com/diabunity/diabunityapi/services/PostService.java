@@ -43,14 +43,15 @@ public class PostService {
 
      //get emojis for each post and set selected by user
      List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getPostId());
-     listReactions.stream().forEach(reaction -> {
-       Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getPostId(), reaction.getEmoji());
-       if (optionalEmoji.isPresent()) {
-         reaction.setSelected(true);
-       }
-       post.setEmojis(listReactions);
-     });
-
+     if (listReactions != null) {
+       listReactions.stream().forEach(reaction -> {
+         Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getPostId(), reaction.getEmoji());
+         if (optionalEmoji.isPresent()) {
+           reaction.setSelected(true);
+         }
+         post.setEmojis(listReactions);
+       });
+     }
    });
 
   return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
@@ -72,12 +73,14 @@ public class PostService {
 
       //get emojis for each post and set selected by user
       List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getPostId());
-      listReactions.stream().forEach(reaction -> {
+      if (listReactions != null) {
+        listReactions.stream().forEach(reaction -> {
           Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getPostId(), reaction.getEmoji());
           if (optionalEmoji.isPresent()) {
             reaction.setSelected(true);
           }
-      });
+        });
+      }
     });
 
     return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
