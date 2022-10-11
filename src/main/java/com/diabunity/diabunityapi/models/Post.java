@@ -7,21 +7,18 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotNull;
-
 @Document
 public class Post {
 
   @Field
   @JsonProperty("post_id")
-  private String postId;
+  private String id;
 
   @Field
   @JsonProperty("user_id")
   private String userId;
 
   @Field
-  @NotNull(message = "Body must not be null.")
   private String body;
 
   @Field
@@ -40,10 +37,10 @@ public class Post {
   @JsonProperty("users_favorites")
   private List<String> usersFavorites;
 
-  public Post(String postId, String userId, String body,
+  public Post(String id, String userId, String body,
               LocalDateTime timestamp, String parentId, String image,
               int qtyComments, List<String> usersFavorites) {
-    this.postId = postId;
+    this.id = id;
     this.userId = userId;
     this.body = body;
     this.timestamp = timestamp;
@@ -53,12 +50,12 @@ public class Post {
     this.usersFavorites = usersFavorites;
   }
 
-  public String getPostId() {
-    return postId;
+  public String getId() {
+    return id;
   }
 
-  public void setPostId(String postId) {
-    this.postId = postId;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getUserId() {

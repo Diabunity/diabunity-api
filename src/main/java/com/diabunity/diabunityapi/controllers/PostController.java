@@ -47,7 +47,7 @@ public class PostController {
       throw new InvalidUserTokenException();
     }
 
-    post.setPostId(UUID.randomUUID().toString());
+    post.setId(UUID.randomUUID().toString());
     post.setTimestamp(LocalDateTime.now());
     post.setUserId(uid);
 
