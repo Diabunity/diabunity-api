@@ -60,9 +60,18 @@ public class PostController {
   @GetMapping("/posts")
   public Object getPosts(HttpServletRequest request,
                          @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                         @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
+                         @RequestParam(value = "size", required=false, defaultValue = "10") int size,
+                         @RequestParam(value = "favorites", required = false, defaultValue = "false") boolean showOnlyFavorites) throws Exception {
 
-      PostResponse  response = postService.getPrincipalsPosts(page, size);
+    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+
+    PostResponse  response;
+
+    if (showOnlyFavorites) {
+      response = postService.getFavoritesPost(page, size, "ciaqGTzHxbO3EqqEiYj0rLvBNM02");
+    } else {
+      response = postService.getPrincipalsPosts(page, size);
+    }
 
       return new ResponseEntity<>(response, HttpStatus.OK);
   }
@@ -71,18 +80,6 @@ public class PostController {
   @GetMapping("/posts/{post_id}")
   public Object getChildPosts(@PathVariable(value = "post_id") String postId) throws Exception {
     PostResponse response = postService.getChildPosts(postId);
-
-    return new ResponseEntity<>(response, HttpStatus.OK);
-  }
-
-  //get favorites posts
-  @GetMapping("/users/{id}/posts/favs")
-  public Object getFavoritesPosts(HttpServletRequest request,
-                         @PathVariable(value = "id") String uid,
-                         @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                         @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
-
-    PostResponse response = postService.getFavoritesPost(page, size, uid);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

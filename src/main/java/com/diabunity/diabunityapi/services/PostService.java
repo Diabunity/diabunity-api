@@ -48,7 +48,7 @@ public class PostService {
 
     List<String> postFavorites = favoriteService.getPostsFavoritesByUser(userId);
 
-    Page<Post> posts =  postRepository.findPostByPostIdIsIn(postFavorites, pageConfig);
+    Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
 
     posts.get().forEach(post -> {
       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
@@ -66,13 +66,13 @@ public class PostService {
   }
 
   public boolean delete(String postId, String userId) {
-    Post postToDelete = postRepository.findPostByPostIdAndUserId(postId, userId);
+    Post postToDelete = postRepository.findPostByIdAndUserId(postId, userId);
 
     if (postToDelete == null) {
       return false;
     }
 
-    postRepository.deletePostByPostIdAndUserId(postId, userId);
+    postRepository.deletePostByIdAndUserId(postId, userId);
     return true;
   }
 

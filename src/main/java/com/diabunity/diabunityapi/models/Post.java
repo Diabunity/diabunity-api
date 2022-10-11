@@ -7,11 +7,12 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotNull;
+
 @Document
 public class Post {
 
   @Field
-  @JsonProperty("post_id")
   private String id;
 
   @Field
@@ -19,6 +20,7 @@ public class Post {
   private String userId;
 
   @Field
+  @NotNull(message = "body must not be null.")
   private String body;
 
   @Field
