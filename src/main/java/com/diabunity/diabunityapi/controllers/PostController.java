@@ -60,20 +60,9 @@ public class PostController {
   @GetMapping("/posts")
   public Object getPosts(HttpServletRequest request,
                          @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                         @RequestParam(value = "size", required=false, defaultValue = "10") int size,
-                         @RequestParam(value = "favorites", required = false, defaultValue = "false") boolean showOnlyFavorites) throws Exception {
-
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-
-    PostResponse  response;
-
-    if (showOnlyFavorites) {
-      response = postService.getFavoritesPost(page, size, "ciaqGTzHxbO3EqqEiYj0rLvBNM02");
-    } else {
-      response = postService.getPrincipalsPosts(page, size);
-    }
-
-      return new ResponseEntity<>(response, HttpStatus.OK);
+                         @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
+    PostResponse response = postService.getPrincipalsPosts(page, size);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   //get comments

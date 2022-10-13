@@ -71,7 +71,7 @@ public class PostService {
     if (postToDelete == null) {
       return false;
     }
-
+    postRepository.deletePostByParentId(postId);
     postRepository.deletePostByIdAndUserId(postId, userId);
     return true;
   }
