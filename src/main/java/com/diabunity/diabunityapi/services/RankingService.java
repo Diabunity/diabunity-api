@@ -34,7 +34,7 @@ public class RankingService {
             try {
                 UserRecord user = userAuthService.getUser(i.getUserID());
                 Integer inTargetPercentage = i.getMeasurementsInTarget() * 100 / i.getTotalMeasurements();
-                return rankingResponse.new RankedUser(i.getUserID(), user.getDisplayName(), user.getPhotoUrl(), i.getMonth(), inTargetPercentage);
+                return rankingResponse.new RankedUser(i.getUserID(), user.getDisplayName(), user.getPhotoUrl(), inTargetPercentage);
             } catch (Exception e) {
                 logger.error("error building MeasurementesInTargetResponse", e);
                 throw new RuntimeException(e);

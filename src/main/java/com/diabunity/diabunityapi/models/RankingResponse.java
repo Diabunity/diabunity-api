@@ -49,15 +49,12 @@ public class RankingResponse {
 
         private String picture;
 
-        private Integer month;
-
         private Integer percentage;
 
-        public RankedUser(String userID, String username, String picture, Integer month, Integer percentage) {
+        public RankedUser(String userID, String username, String picture, Integer percentage) {
             this.userID = userID;
             this.username = username;
             this.picture = picture;
-            this.month = month;
             this.percentage = percentage;
         }
 
@@ -83,14 +80,6 @@ public class RankingResponse {
 
         public void setPicture(String picture) {
             this.picture = picture;
-        }
-
-        public Integer getMonth() {
-            return month;
-        }
-
-        public void setMonth(Integer month) {
-            this.month = month;
         }
 
         public Integer getPercentage() {
