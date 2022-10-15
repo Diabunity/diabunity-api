@@ -74,24 +74,6 @@ public class PostController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  //get favorites posts
-  @GetMapping("/users/{id}/posts/favs")
-  public Object getFavoritesPosts(HttpServletRequest request,
-                         @PathVariable(value = "id") String uid,
-                         @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-                         @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
-
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-
-    if (!authorizedUser.equals(uid)) {
-      throw new InvalidUserTokenException();
-    }
-
-    PostResponse response = postService.getFavoritesPost(page, size, uid);
-
-    return new ResponseEntity<>(response, HttpStatus.OK);
-  }
-
   @DeleteMapping("/users/{id}/posts/{post_id}")
   public Object deletePost(HttpServletRequest request,
                            @PathVariable(value = "id") String uid,

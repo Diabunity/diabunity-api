@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 public class Post {
 
   @Field
-  @Id
   private String id;
 
   @Field
@@ -37,7 +36,6 @@ public class Post {
   private String image;
 
   @JsonProperty("qty_comments")
-
   @Transient
   private int qtyComments;
 

@@ -65,8 +65,7 @@ public class PostService {
 
     Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
 
-    //List<UserReaction> userReactions = null;
-
+    //set quantity of comments && favorites users for each post
     posts.get().forEach(post -> {
       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
