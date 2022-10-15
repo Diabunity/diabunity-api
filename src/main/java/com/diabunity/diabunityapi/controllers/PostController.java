@@ -41,13 +41,13 @@ public class PostController {
           errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
     }
 
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+   String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
     if (!authorizedUser.equals(uid)) {
       throw new InvalidUserTokenException();
     }
 
-    post.setPostId(UUID.randomUUID().toString());
+    post.setId(UUID.randomUUID().toString());
     post.setTimestamp(LocalDateTime.now());
     post.setUserId(uid);
 
@@ -61,11 +61,8 @@ public class PostController {
   public Object getPosts(HttpServletRequest request,
                          @RequestParam(value = "page", required=false, defaultValue = "0") int page,
                          @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
-
       String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-
       PostResponse  response = postService.getPrincipalsPosts(page, size, authorizedUser);
-
       return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
@@ -108,7 +105,7 @@ public class PostController {
 
     boolean result = postService.delete(postId, uid);
 
-    return new ResponseEntity<>(result? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(result ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND);
   }
 
 }

@@ -2,6 +2,7 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.PostRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostService {
@@ -34,18 +34,18 @@ public class PostService {
     Pageable pageConfig = PageRequest.of(page, size,
         Sort.by(Sort.Direction.DESC, "timestamp"));
 
-   Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
+     Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
 
    //set quantity of comments && favorites users for each post
    posts.get().forEach(post -> {
-     post.setQtyComments(getChildPosts(post.getPostId()).getPosts().size());
-     post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getPostId()));
+     post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+     post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
      //get emojis for each post and set selected by user
-     List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getPostId());
+     List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getId());
      if (listReactions != null) {
        listReactions.stream().forEach(reaction -> {
-         Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getPostId(), reaction.getEmoji());
+         Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getId(), reaction.getEmoji());
          if (optionalEmoji.isPresent()) {
            reaction.setSelected(true);
          }
@@ -54,28 +54,28 @@ public class PostService {
      }
    });
 
-  return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
+    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
   }
 
   public PostResponse getFavoritesPost(int page, int size, String userId) {
     Pageable pageConfig = PageRequest.of(page, size,
             Sort.by(Sort.Direction.DESC, "timestamp"));
 
-    List<String> postFavorites = favoriteService.getPostsFavoritesByUser(userId);
+    List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
 
-    Page<Post> posts =  postRepository.findPostByPostIdIsIn(postFavorites, pageConfig);
+    Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
 
     //List<UserReaction> userReactions = null;
 
     posts.get().forEach(post -> {
-      post.setQtyComments(getChildPosts(post.getPostId()).getPosts().size());
-      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getPostId()));
+      post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
       //get emojis for each post and set selected by user
-      List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getPostId());
+      List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getId());
       if (listReactions != null) {
         listReactions.stream().forEach(reaction -> {
-          Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getPostId(), reaction.getEmoji());
+          Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getId(), reaction.getEmoji());
           if (optionalEmoji.isPresent()) {
             reaction.setSelected(true);
           }
@@ -83,24 +83,24 @@ public class PostService {
       }
     });
 
-    return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
+    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
 
   }
 
   public PostResponse getChildPosts(String parentId) {
     List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
 
-    return new PostResponse(posts, 0, 0);
+    return new PostResponse(posts, null);
   }
 
   public boolean delete(String postId, String userId) {
-    Post postToDelete = postRepository.findPostByPostIdAndUserId(postId, userId);
+    Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
 
-    if (postToDelete == null) {
+    if (!resultDelete.isPresent()) {
       return false;
     }
 
-    postRepository.deletePostByPostIdAndUserId(postId, userId);
+    postRepository.deletePostByParentId(postId);
     return true;
   }
 

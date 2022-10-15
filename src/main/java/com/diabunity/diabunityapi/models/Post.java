@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,15 +16,14 @@ public class Post {
 
   @Field
   @Id
-  @JsonProperty("post_id")
-  private String postId;
+  private String id;
 
   @Field
   @JsonProperty("user_id")
   private String userId;
 
   @Field
-  @NotNull(message = "Body must not be null.")
+  @NotNull(message = "body must not be null.")
   private String body;
 
   @Field
@@ -38,34 +37,34 @@ public class Post {
   private String image;
 
   @JsonProperty("qty_comments")
+
+  @Transient
   private int qtyComments;
 
   @JsonProperty("users_favorites")
+  @Transient
   private List<String> usersFavorites;
 
   @Field
   private List<Emoji> emojis;
 
-  public Post(String postId, String userId, String body,
-              LocalDateTime timestamp, String parentId, String image,
-              int qtyComments, List<String> usersFavorites, List<Emoji> emojis) {
-    this.postId = postId;
+  public Post(String id, String userId, String body,
+              LocalDateTime timestamp, String parentId, String image, List<Emoji> emojis) {
+    this.id = id;
     this.userId = userId;
     this.body = body;
     this.timestamp = timestamp;
     this.parentId = parentId;
     this.image = image;
-    this.qtyComments = qtyComments;
-    this.usersFavorites = usersFavorites;
     this.emojis = emojis;
   }
 
-  public String getPostId() {
-    return postId;
+  public String getId() {
+    return id;
   }
 
-  public void setPostId(String postId) {
-    this.postId = postId;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getUserId() {

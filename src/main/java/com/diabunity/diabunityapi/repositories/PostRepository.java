@@ -1,6 +1,7 @@
 package com.diabunity.diabunityapi.repositories;
 
 import com.diabunity.diabunityapi.models.Post;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,9 +17,11 @@ public interface PostRepository extends MongoRepository<Post, String> {
 
   List<Post> findPostByParentId(String parentId, Sort sort);
 
-  Page<Post> findPostByPostIdIsIn(List<String> postId, Pageable page);
+  Page<Post> findPostByIdIsIn(List<String> postId, Pageable page);
 
-  Post findPostByPostIdAndUserId(String id, String userId);
+  Post findPostByIdAndUserId(String id, String userId);
 
-  void deletePostByPostIdAndUserId(String id, String userId);
+  Optional<Post> deletePostByIdAndUserId(String id, String userId);
+
+  void deletePostByParentId(String postId);
 }
