@@ -39,8 +39,8 @@ public class MeasurementService {
         // calculate the status of each measurement based on the minimum and maximum glucose previously set by the user
         User user = userService.getUser(userID).get();
 
-        final Double minGlucose = user.getGlucoseMin();
-        final Double maxGlucose = user.getGlucoseMax();
+        final Double minGlucose = user.getMinGlucose();
+        final Double maxGlucose = user.getMaxGlucose();
 
         measurements.forEach(m -> m.setStatus(calculateStatus(m.getMeasurement(), minGlucose, maxGlucose)));
 
@@ -91,8 +91,8 @@ public class MeasurementService {
 
         User user = userService.getUser(userID).get();
 
-        final Double minGlucose = user.getGlucoseMin();
-        final Double maxGlucose = user.getGlucoseMax();
+        final Double minGlucose = user.getMinGlucose();
+        final Double maxGlucose = user.getMaxGlucose();
 
         return new MeasurementsResponse(measurements,
                 average(measurements, minGlucose, maxGlucose),
