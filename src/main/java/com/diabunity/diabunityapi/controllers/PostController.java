@@ -86,7 +86,7 @@ public class PostController {
 
     boolean result = postService.delete(postId, uid);
 
-    return new ResponseEntity<>(result? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(result ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND);
   }
 
 }

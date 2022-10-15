@@ -1,8 +1,10 @@
 package com.diabunity.diabunityapi.services;
 
+import com.diabunity.diabunityapi.models.Pagining;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,22 +33,22 @@ public class PostService {
     Pageable pageConfig = PageRequest.of(page, size,
         Sort.by(Sort.Direction.DESC, "timestamp"));
 
-   Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
+     Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
 
-   //set quantity of comments && favorites users for each post
-   posts.get().forEach(post -> {
-     post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
-     post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
-   });
+     //set quantity of comments && favorites users for each post
+     posts.get().forEach(post -> {
+       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
+     });
 
-  return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
+    return new PostResponse(posts.getContent(), new Pagining(posts.getTotalPages(), posts.getTotalElements()));
   }
 
   public PostResponse getFavoritesPost(int page, int size, String userId) {
     Pageable pageConfig = PageRequest.of(page, size,
             Sort.by(Sort.Direction.DESC, "timestamp"));
 
-    List<String> postFavorites = favoriteService.getPostsFavoritesByUser(userId);
+    List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
 
     Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
 
@@ -55,24 +57,24 @@ public class PostService {
       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
     });
 
-    return new PostResponse(posts.getContent(), posts.getTotalPages(), posts.getTotalElements());
+    return new PostResponse(posts.getContent(), new Pagining(posts.getTotalPages(), posts.getTotalElements()));
 
   }
 
   public PostResponse getChildPosts(String parentId) {
     List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
 
-    return new PostResponse(posts, 0, 0);
+    return new PostResponse(posts, null);
   }
 
   public boolean delete(String postId, String userId) {
-    Post postToDelete = postRepository.findPostByIdAndUserId(postId, userId);
+    Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
 
-    if (postToDelete == null) {
+    if (!resultDelete.isPresent()) {
       return false;
     }
+
     postRepository.deletePostByParentId(postId);
-    postRepository.deletePostByIdAndUserId(postId, userId);
     return true;
   }
 

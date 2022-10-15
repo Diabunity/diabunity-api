@@ -6,14 +6,11 @@ public class PostResponse {
 
   private List<Post> posts;
 
-  private long totalPages;
+  private Pagining pagining;
 
-  private long totalElements;
-
-  public PostResponse(List<Post> posts, long totalPages, long totalElements) {
+  public PostResponse(List<Post> posts,Pagining pagining) {
     this.posts = posts;
-    this.totalPages = totalPages;
-    this.totalElements = totalElements;
+    this.pagining = pagining;
   }
 
   public List<Post> getPosts() {
@@ -24,19 +21,11 @@ public class PostResponse {
     this.posts = posts;
   }
 
-  public long getTotalPages() {
-    return totalPages;
+  public Pagining getPagining() {
+    return pagining;
   }
 
-  public void setTotalPages(long totalPages) {
-    this.totalPages = totalPages;
-  }
-
-  public long getTotalElements() {
-    return totalElements;
-  }
-
-  public void setTotalElements(long totalElements) {
-    this.totalElements = totalElements;
+  public void setPagining(Pagining pagining) {
+    this.pagining = pagining;
   }
 }

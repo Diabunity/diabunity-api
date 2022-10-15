@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -34,9 +35,11 @@ public class Post {
   private String image;
 
   @JsonProperty("qty_comments")
+  @Transient
   private int qtyComments;
 
   @JsonProperty("users_favorites")
+  @Transient
   private List<String> usersFavorites;
 
   public Post(String id, String userId, String body,

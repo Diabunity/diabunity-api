@@ -13,7 +13,7 @@ public class FavoriteService {
   @Autowired
   private FavoriteRepository favoriteRepository;
 
-  public List<String> getPostsFavoritesByUser(String userId) {
+  public List<String> getFavoritesPostsByUser(String userId) {
     List<Favorite> listFavorites = favoriteRepository.findByUserId(userId);
 
     List<String> result = new ArrayList<>();
