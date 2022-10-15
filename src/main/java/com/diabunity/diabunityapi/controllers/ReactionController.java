@@ -17,34 +17,30 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
-    @PostMapping("/posts/{post_id}/reaction/{emoji}")
+    @PostMapping("/posts/{post_id}/reaction/{name_emoji}")
     public Object saveReaction(HttpServletRequest request,
                                @PathVariable(value="post_id") String postId,
-                               @PathVariable(value="emoji") String emoji,
-                               @RequestBody List<Emoji> emojis) throws Exception {
+                               @PathVariable(value="name_emoji") String emoji,
+                               @RequestBody List<Emoji> listEmojis) throws Exception {
 
-        String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+            String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
-        reactionService.saveUserReaction(authorizedUser, postId, emoji);
-
-        Reaction reactionResponse = reactionService.saveReaction(emojis, postId);
-
-        return new ResponseEntity<>(reactionResponse, HttpStatus.OK);
+            reactionService.saveUserReaction(authorizedUser, postId, emoji);
+            Reaction reactionResponse = reactionService.saveReaction(listEmojis, postId);
+            return new ResponseEntity<>(reactionResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/posts/{post_id}/reaction/{emoji}")
+    @PutMapping("/posts/{post_id}/reaction/{name_emoji}")
     public Object deleteReaction(HttpServletRequest request,
                                @PathVariable(value="post_id") String postId,
-                               @PathVariable(value="emoji") String emoji,
-                               @RequestBody List<Emoji> emojis) throws Exception {
+                               @PathVariable(value="name_emoji") String nameEmoji,
+                               @RequestBody List<Emoji> listEmojis) throws Exception {
 
-        String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+            String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
-        reactionService.deleteUserReaction(authorizedUser, postId, emoji);
-
-         reactionService.saveReaction(emojis, postId);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            reactionService.deleteUserReaction(authorizedUser, postId, nameEmoji);
+            reactionService.saveReaction(listEmojis, postId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -49,8 +49,8 @@ public class PostService {
          if (optionalEmoji.isPresent()) {
            reaction.setSelected(true);
          }
-         post.setEmojis(listReactions);
        });
+       post.setEmojis(listReactions);
      }
    });
 
@@ -79,6 +79,7 @@ public class PostService {
             reaction.setSelected(true);
           }
         });
+        post.setEmojis(listReactions);
       }
     });
 

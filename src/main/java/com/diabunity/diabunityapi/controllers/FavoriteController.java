@@ -7,11 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 
@@ -32,9 +27,9 @@ public class FavoriteController {
                              @RequestParam(value = "page", required=false, defaultValue = "0") int page,
                              @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
 
-      String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-      PostResponse response = postService.getFavoritesPost(page, size, authorizedUser);
-      return new ResponseEntity<>(response, HttpStatus.OK);
+        String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+        PostResponse response = postService.getFavoritesPost(page, size, authorizedUser);
+        return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
 
@@ -43,15 +38,15 @@ public class FavoriteController {
                              @PathVariable(value="user_id") String uid,
                              @RequestBody Post post) throws Exception {
 
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+      String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
-    if (!authorizedUser.equals(uid)) {
-      throw new InvalidUserTokenException();
-    }
+      if (!authorizedUser.equals(uid)) {
+        throw new InvalidUserTokenException();
+      }
 
-    Favorite response = favoriteService.saveFavorite(uid, post.getId());
+      Favorite response = favoriteService.saveFavorite(uid, post.getId());
 
-    return new ResponseEntity<>(response, HttpStatus.OK);
+      return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @DeleteMapping("/users/{user_id}/favs/posts/{post_id}")
@@ -59,15 +54,15 @@ public class FavoriteController {
                              @PathVariable(value="user_id") String uid,
                              @PathVariable(value="post_id") String postId) throws Exception {
 
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+      String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
-    if (!authorizedUser.equals(uid)) {
-      throw new InvalidUserTokenException();
-    }
+      if (!authorizedUser.equals(uid)) {
+        throw new InvalidUserTokenException();
+      }
 
-    favoriteService.deleteFavorite(uid, postId);
+      favoriteService.deleteFavorite(uid, postId);
 
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
 }

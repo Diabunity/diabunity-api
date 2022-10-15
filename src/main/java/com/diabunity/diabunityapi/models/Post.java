@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -44,17 +43,17 @@ public class Post {
   private List<String> usersFavorites;
 
   @Field
+  @Transient
   private List<Emoji> emojis;
 
   public Post(String id, String userId, String body,
-              LocalDateTime timestamp, String parentId, String image, List<Emoji> emojis) {
+              LocalDateTime timestamp, String parentId, String image) {
     this.id = id;
     this.userId = userId;
     this.body = body;
     this.timestamp = timestamp;
     this.parentId = parentId;
     this.image = image;
-    this.emojis = emojis;
   }
 
   public String getId() {
