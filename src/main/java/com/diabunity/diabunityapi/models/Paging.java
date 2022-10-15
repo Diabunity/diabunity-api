@@ -1,11 +1,11 @@
 package com.diabunity.diabunityapi.models;
 
-public class Pagining {
+public class Paging {
   private long totalPages;
 
   private long totalElements;
 
-  public Pagining(long totalPages, long totalElements) {
+  public Paging(long totalPages, long totalElements) {
     this.totalPages = totalPages;
     this.totalElements = totalElements;
   }

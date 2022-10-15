@@ -6,11 +6,11 @@ public class PostResponse {
 
   private List<Post> posts;
 
-  private Pagining pagining;
+  private Paging paging;
 
-  public PostResponse(List<Post> posts,Pagining pagining) {
+  public PostResponse(List<Post> posts, Paging paging) {
     this.posts = posts;
-    this.pagining = pagining;
+    this.paging = paging;
   }
 
   public List<Post> getPosts() {
@@ -21,11 +21,11 @@ public class PostResponse {
     this.posts = posts;
   }
 
-  public Pagining getPagining() {
-    return pagining;
+  public Paging getPagining() {
+    return paging;
   }
 
-  public void setPagining(Pagining pagining) {
-    this.pagining = pagining;
+  public void setPagining(Paging paging) {
+    this.paging = paging;
   }
 }

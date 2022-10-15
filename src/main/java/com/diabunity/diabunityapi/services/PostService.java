@@ -1,6 +1,6 @@
 package com.diabunity.diabunityapi.services;
 
-import com.diabunity.diabunityapi.models.Pagining;
+import com.diabunity.diabunityapi.models.Paging;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
@@ -41,7 +41,7 @@ public class PostService {
        post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
      });
 
-    return new PostResponse(posts.getContent(), new Pagining(posts.getTotalPages(), posts.getTotalElements()));
+    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
   }
 
   public PostResponse getFavoritesPost(int page, int size, String userId) {
@@ -57,7 +57,7 @@ public class PostService {
       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
     });
 
-    return new PostResponse(posts.getContent(), new Pagining(posts.getTotalPages(), posts.getTotalElements()));
+    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
 
   }
 
