@@ -21,11 +21,11 @@ public class PostResponse {
     this.posts = posts;
   }
 
-  public Paging getPagining() {
+  public Paging getPaging() {
     return paging;
   }
 
-  public void setPagining(Paging paging) {
+  public void setPaging(Paging paging) {
     this.paging = paging;
   }
 }
