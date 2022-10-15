@@ -41,7 +41,7 @@ public class PostController {
           errors.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
     }
 
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+   String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
     if (!authorizedUser.equals(uid)) {
       throw new InvalidUserTokenException();

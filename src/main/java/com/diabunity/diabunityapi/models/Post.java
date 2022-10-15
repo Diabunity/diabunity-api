@@ -43,16 +43,13 @@ public class Post {
   private List<String> usersFavorites;
 
   public Post(String id, String userId, String body,
-              LocalDateTime timestamp, String parentId, String image,
-              int qtyComments, List<String> usersFavorites) {
+              LocalDateTime timestamp, String parentId, String image) {
     this.id = id;
     this.userId = userId;
     this.body = body;
     this.timestamp = timestamp;
     this.parentId = parentId;
     this.image = image;
-    this.qtyComments = qtyComments;
-    this.usersFavorites = usersFavorites;
   }
 
   public String getId() {

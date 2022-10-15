@@ -1,18 +1,7 @@
 package com.diabunity.diabunityapi.services;
 
-import com.diabunity.diabunityapi.models.Measurement;
-import com.diabunity.diabunityapi.models.MeasurementAverage;
-import com.diabunity.diabunityapi.models.MeasurementSource;
-import com.diabunity.diabunityapi.models.MeasurementStatus;
-import com.diabunity.diabunityapi.models.MeasurementsResponse;
-import com.diabunity.diabunityapi.models.PeriodInTarget;
-import com.diabunity.diabunityapi.models.User;
+import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,47 +9,79 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 public class MeasurementService {
 
     private final static int GLUCOSE_GAP_WARNING = 30;
-
+    static Long VALID_OFFSET_MINUTES = 15L;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private RankingService rankingService;
     @Autowired
     private MeasurementRepository measurementRepository;
 
     public List<Measurement> saveAll(List<Measurement> measurements) {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
+        String userID = measurements.get(0).getUserId();
+        List<Measurement> measurementsToSave = filterDuplicatedMeasurements(measurements);
+        if (measurementsToSave.isEmpty()) {
+            return null;
+        }
+
+        // calculate the status of each measurement based on the minimum and maximum glucose previously set by the user
+        User user = userService.getUser(userID).get();
+
+        final Double minGlucose = user.getMinGlucose();
+        final Double maxGlucose = user.getMaxGlucose();
+
+        measurements.forEach(m -> m.setStatus(calculateStatus(m.getMeasurement(), minGlucose, maxGlucose)));
+
+        measurementRepository.saveAll(measurementsToSave);
+        updateInTargetForRanking(userID, measurements);
+
+        return measurementsToSave;
+    }
+
+    private List<Measurement> filterDuplicatedMeasurements(List<Measurement> measurements) {
+        String userID = measurements.get(0).getUserId();
         Measurement lastMeasurementSaved = measurementRepository
-            .findFirstByUserIdAndSource(measurements.get(0).getUserId(), MeasurementSource.SENSOR, Sort.by(Sort.Direction.DESC, "timestamp"));
+                .findFirstByUserIdAndSource(userID, MeasurementSource.SENSOR, Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
 
-        for(Measurement m:measurements) {
+        for (Measurement m : measurements) {
             if (lastMeasurementSaved == null
-                || m.getSource().equals(MeasurementSource.MANUAL)
-                || (lastMeasurementSaved.getTimestamp().plusMinutes(15L).isBefore(m.getTimestamp()))
-                || lastMeasurementSaved.getTimestamp().plusMinutes(15L).isEqual(m.getTimestamp())) {
+                    || m.getSource().equals(MeasurementSource.MANUAL)
+                    || (lastMeasurementSaved.getTimestamp().plusMinutes(VALID_OFFSET_MINUTES).isBefore(m.getTimestamp()))
+                    || lastMeasurementSaved.getTimestamp().plusMinutes(VALID_OFFSET_MINUTES).isEqual(m.getTimestamp())) {
                 measurementsToSave.add(m);
                 lastMeasurementSaved = m;
             }
         }
 
-        if (!measurementsToSave.isEmpty()) {
-            measurementRepository.saveAll(measurementsToSave);
-        }
-
         return measurementsToSave;
     }
 
-    public MeasurementsResponse getAllByUserId(String userId, LocalDateTime from, LocalDateTime to, int page, int size) {
-        Pageable pageConfig = PageRequest.of(page, size,
-            Sort.by(Sort.Direction.DESC, "timestamp"));
+    private void updateInTargetForRanking(String userID, List<Measurement> measurements) {
+        Integer month = measurements.get(0).getTimestamp().getMonth().getValue();
+        Long measurementsOK = measurements.stream().filter(m -> m.getStatus() == MeasurementStatus.OK).count();
+        Integer totalMeasurements = measurements.size();
+        rankingService.updateMeasuresInTargetForUserInMonth(userID, month, Math.toIntExact(measurementsOK), totalMeasurements);
+    }
 
-        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userId, from, to, pageConfig);
+    public MeasurementsResponse getAllByUserId(String userID, LocalDateTime from, LocalDateTime to, int page, int size) {
+        Pageable pageConfig = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userID, from, to, pageConfig);
 
         List<Measurement> measurements = pageResult.getContent();
 
@@ -68,18 +89,10 @@ public class MeasurementService {
             return new MeasurementsResponse(measurements);
         }
 
-        User user = userService.getUser(userId).get();
+        User user = userService.getUser(userID).get();
 
-        final Double minGlucose = user.getGlucoseMin();
-        final Double maxGlucose = user.getGlucoseMax();
-
-        if (minGlucose.isNaN() || maxGlucose.isNaN()) {
-            return new MeasurementsResponse(measurements);
-        }
-
-        measurements.forEach(m -> {
-            m.setStatus(calculateStatus(m.getMeasurement(), minGlucose, maxGlucose));
-        });
+        final Double minGlucose = user.getMinGlucose();
+        final Double maxGlucose = user.getMaxGlucose();
 
         return new MeasurementsResponse(measurements,
                 average(measurements, minGlucose, maxGlucose),
