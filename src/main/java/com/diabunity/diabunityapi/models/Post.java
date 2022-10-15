@@ -3,7 +3,8 @@ package com.diabunity.diabunityapi.models;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mongodb.lang.Nullable;
+import java.util.List;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,10 +17,11 @@ public class Post {
   private String id;
 
   @Field
+  @JsonProperty("user_id")
   private String userId;
 
   @Field
-  @NotNull(message = "Body must not be null.")
+  @NotNull(message = "body must not be null.")
   private String body;
 
   @Field
@@ -30,19 +32,24 @@ public class Post {
   private String parentId;
 
   @Field
-  @NotNull(message = "Image max must not be null.")
   private String image;
 
+  @JsonProperty("qty_comments")
+  @Transient
   private int qtyComments;
 
-  public Post(String id, String userId, String body, LocalDateTime timestamp, String parentId, String image, int qtyComments) {
+  @JsonProperty("users_favorites")
+  @Transient
+  private List<String> usersFavorites;
+
+  public Post(String id, String userId, String body,
+              LocalDateTime timestamp, String parentId, String image) {
     this.id = id;
     this.userId = userId;
     this.body = body;
     this.timestamp = timestamp;
     this.parentId = parentId;
     this.image = image;
-    this.qtyComments = qtyComments;
   }
 
   public String getId() {
@@ -88,4 +95,8 @@ public class Post {
   public String getImage() { return image; }
 
   public void setImage(String image) { this.image = image; }
+
+  public List<String> getUsersFavorites() { return usersFavorites; }
+
+  public void setUsersFavorites(List<String> usersFavorites) { this.usersFavorites = usersFavorites; }
 }
