@@ -1,5 +1,6 @@
 package com.diabunity.diabunityapi.services;
 
+import com.diabunity.diabunityapi.auth.UserAuthService;
 import com.diabunity.diabunityapi.models.Paging;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
@@ -23,6 +24,9 @@ public class PostService {
   @Autowired
   private FavoriteService favoriteService;
 
+  @Autowired
+  private UserAuthService userAuthService;
+
   public Post save(Post p) {
     postRepository.save(p);
 
@@ -39,6 +43,11 @@ public class PostService {
      posts.get().forEach(post -> {
        post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
        post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
+       try {
+         post.setUser(userAuthService.getUser(post.getUserId()));
+       } catch (Exception e) {
+         throw new RuntimeException(e);
+       }
      });
 
     return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
@@ -55,6 +64,11 @@ public class PostService {
     posts.get().forEach(post -> {
       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
+      try {
+        post.setUser(userAuthService.getUser(post.getUserId()));
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     });
 
     return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
