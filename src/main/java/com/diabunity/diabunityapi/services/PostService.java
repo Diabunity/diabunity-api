@@ -1,6 +1,10 @@
 package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.*;
+import com.diabunity.diabunityapi.auth.UserAuthService;
+import com.diabunity.diabunityapi.models.Paging;
+import com.diabunity.diabunityapi.models.Post;
+import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,8 @@ public class PostService {
 
   @Autowired
   private ReactionService reactionService;
+  @Autowired
+  private UserAuthService userAuthService;
 
   public Post save(Post p) {
     postRepository.save(p);
@@ -41,11 +47,17 @@ public class PostService {
      post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
+     try {
+       post.setUser(userAuthService.getUser(post.getUserId()));
+     } catch (Exception e) {
+       throw new RuntimeException(e);
+     }
+
      //get emojis for each post and set selected by user
-     List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getId());
+     List<Reaction> listReactions = reactionService.getReactionsByPost(post.getId());
      if (listReactions != null) {
        listReactions.stream().forEach(reaction -> {
-         Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getId(), reaction.getEmoji());
+         Optional<Reaction> optionalEmoji = reactionService.findReactionPerformed(post.getId(), userId, reaction.getName());
          if (optionalEmoji.isPresent()) {
            reaction.setSelected(true);
          }
@@ -70,11 +82,17 @@ public class PostService {
       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
+      try {
+        post.setUser(userAuthService.getUser(post.getUserId()));
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
       //get emojis for each post and set selected by user
-      List<Emoji> listReactions = reactionService.getReactionsByPostId(post.getId());
+      List<Reaction> listReactions = reactionService.getReactionsByPost(post.getId());
       if (listReactions != null) {
         listReactions.stream().forEach(reaction -> {
-          Optional<UserReaction> optionalEmoji = reactionService.getUserReactions(userId, post.getId(), reaction.getEmoji());
+          Optional<Reaction> optionalEmoji = reactionService.findReactionPerformed(post.getId(), userId, reaction.getName());
           if (optionalEmoji.isPresent()) {
             reaction.setSelected(true);
           }

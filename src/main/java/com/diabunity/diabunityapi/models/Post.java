@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+
+import com.google.firebase.auth.UserRecord;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -44,7 +46,9 @@ public class Post {
 
   @Field
   @Transient
-  private List<Emoji> emojis;
+  private List<Reaction> emojis;
+  @Transient
+  private UserRecord user;
 
   public Post(String id, String userId, String body,
               LocalDateTime timestamp, String parentId, String image) {
@@ -104,10 +108,18 @@ public class Post {
 
   public void setUsersFavorites(List<String> usersFavorites) { this.usersFavorites = usersFavorites; }
 
-  public List<Emoji> getEmojis() {
+  public List<Reaction> getEmojis() {
     return emojis;
   }
-  public void setEmojis(List<Emoji> emojis) {
+  public void setEmojis(List<Reaction> emojis) {
     this.emojis = emojis;
+  }
+
+  public UserRecord getUser() {
+    return user;
+  }
+
+  public void setUser(UserRecord user) {
+    this.user = user;
   }
 }
