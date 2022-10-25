@@ -5,7 +5,6 @@ import com.diabunity.diabunityapi.models.Paging;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -35,22 +35,11 @@ public class PostService {
 
   public PostResponse getPrincipalsPosts(int page, int size) {
     Pageable pageConfig = PageRequest.of(page, size,
-        Sort.by(Sort.Direction.DESC, "timestamp"));
+            Sort.by(Sort.Direction.DESC, "timestamp"));
 
-     Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
+    Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
 
-     //set quantity of comments && favorites users for each post
-     posts.get().forEach(post -> {
-       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
-       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
-       try {
-         post.setUser(userAuthService.getUser(post.getUserId()));
-       } catch (Exception e) {
-         throw new RuntimeException(e);
-       }
-     });
-
-    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
+    return buildPostsResponse(posts);
   }
 
   public PostResponse getFavoritesPost(int page, int size, String userId) {
@@ -59,20 +48,25 @@ public class PostService {
 
     List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
 
-    Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
+    Page<Post> posts = postRepository.findPostByIdIsIn(postFavorites, pageConfig);
 
+    return buildPostsResponse(posts);
+
+  }
+
+  // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
+  private PostResponse buildPostsResponse(Page<Post> posts) {
     posts.get().forEach(post -> {
       post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
       post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
       try {
-        post.setUser(userAuthService.getUser(post.getUserId()));
+        post.setUser(userAuthService.getUser(post.getUserId()).getDisplayName());
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
 
     return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
-
   }
 
   public PostResponse getChildPosts(String parentId) {
