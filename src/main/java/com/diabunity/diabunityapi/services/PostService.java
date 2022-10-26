@@ -18,72 +18,71 @@ import java.util.Optional;
 @Service
 public class PostService {
 
-  @Autowired
-  private PostRepository postRepository;
+    @Autowired
+    private PostRepository postRepository;
 
-  @Autowired
-  private FavoriteService favoriteService;
+    @Autowired
+    private FavoriteService favoriteService;
 
-  @Autowired
-  private UserAuthService userAuthService;
+    @Autowired
+    private UserAuthService userAuthService;
 
-  public Post save(Post p) {
-    postRepository.save(p);
+    public Post save(Post p) {
+        postRepository.save(p);
 
-    return p;
-  }
-
-  public PostResponse getPrincipalsPosts(int page, int size) {
-    Pageable pageConfig = PageRequest.of(page, size,
-            Sort.by(Sort.Direction.DESC, "timestamp"));
-
-    Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
-
-    return buildPostsResponse(posts);
-  }
-
-  public PostResponse getFavoritesPost(int page, int size, String userId) {
-    Pageable pageConfig = PageRequest.of(page, size,
-            Sort.by(Sort.Direction.DESC, "timestamp"));
-
-    List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
-
-    Page<Post> posts = postRepository.findPostByIdIsIn(postFavorites, pageConfig);
-
-    return buildPostsResponse(posts);
-
-  }
-
-  // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
-  private PostResponse buildPostsResponse(Page<Post> posts) {
-    posts.get().forEach(post -> {
-      post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
-      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
-      try {
-        post.setUser(userAuthService.getUser(post.getUserId()).getDisplayName());
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
-
-    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
-  }
-
-  public PostResponse getChildPosts(String parentId) {
-    List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
-
-    return new PostResponse(posts, null);
-  }
-
-  public boolean delete(String postId, String userId) {
-    Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
-
-    if (!resultDelete.isPresent()) {
-      return false;
+        return p;
     }
 
-    postRepository.deletePostByParentId(postId);
-    return true;
-  }
+    public PostResponse getPrincipalsPosts(int page, int size) {
+        Pageable pageConfig = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
+
+        return buildPostsResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
+    }
+
+    public PostResponse getFavoritesPost(int page, int size, String userId) {
+        Pageable pageConfig = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
+
+        Page<Post> posts = postRepository.findPostByIdIsIn(postFavorites, pageConfig);
+
+        return buildPostsResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
+    }
+
+    // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
+    private PostResponse buildPostsResponse(List<Post> posts, Paging paging) {
+        posts.forEach(post -> {
+            post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+            post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
+            try {
+                post.setUser(userAuthService.getUser(post.getUserId()).getDisplayName());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        return new PostResponse(posts, paging);
+    }
+
+    public PostResponse getChildPosts(String parentId) {
+        List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        return buildPostsResponse(posts, null);
+    }
+
+    public boolean delete(String postId, String userId) {
+        Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
+
+        if (!resultDelete.isPresent()) {
+            return false;
+        }
+
+        postRepository.deletePostByParentId(postId);
+        return true;
+    }
 
 }
