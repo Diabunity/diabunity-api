@@ -15,7 +15,7 @@ public class ReactionController {
     @Autowired
     private ReactionService reactionService;
 
-    @PostMapping("/posts/{post_id}/reaction/")
+    @PostMapping("/posts/{post_id}/reaction")
     public Object saveReaction(HttpServletRequest request,
                                @PathVariable(value="post_id") String postId,
                                @RequestBody Reaction reaction) throws Exception {

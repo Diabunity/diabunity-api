@@ -6,7 +6,11 @@ import com.diabunity.diabunityapi.models.Paging;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.repositories.PostRepository;
+
+import java.util.ArrayList;
 import java.util.Optional;
+
+import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,18 +56,7 @@ public class PostService {
      } catch (Exception e) {
        throw new RuntimeException(e);
      }
-
-     //get emojis for each post and set selected by user
-     List<Reaction> listReactions = reactionService.getReactionsByPost(post.getId());
-     if (listReactions != null) {
-       listReactions.stream().forEach(reaction -> {
-         Optional<Reaction> optionalEmoji = reactionService.findReactionPerformed(post.getId(), userId, reaction.getName());
-         if (optionalEmoji.isPresent()) {
-           reaction.setSelected(true);
-         }
-       });
-       post.setEmojis(listReactions);
-     }
+     post.setEmojis(createReactionResponse(userId, post.getId()));
    });
 
     return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
@@ -87,22 +80,32 @@ public class PostService {
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
-
-      //get emojis for each post and set selected by user
-      List<Reaction> listReactions = reactionService.getReactionsByPost(post.getId());
-      if (listReactions != null) {
-        listReactions.stream().forEach(reaction -> {
-          Optional<Reaction> optionalEmoji = reactionService.findReactionPerformed(post.getId(), userId, reaction.getName());
-          if (optionalEmoji.isPresent()) {
-            reaction.setSelected(true);
-          }
-        });
-        post.setEmojis(listReactions);
-      }
+      post.setEmojis(createReactionResponse(userId, post.getId()));
     });
 
     return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
 
+  }
+
+  private List<Reaction> createReactionResponse(String userId, String postId) {
+    List<Reaction> reactionsList = reactionService.getReactionsByPost(postId);
+    List<Reaction> result = new ArrayList<>();
+    if (reactionsList != null) {
+      reactionsList.stream().forEach(reaction -> {
+        if (reaction.getUserId() == userId) {
+          reaction.setSelected(true);
+        }
+        int indexInResponse = Iterables.indexOf(result, r -> r.getName().equals(reaction.getName()));
+        if(indexInResponse >= 0) {
+          result.get(indexInResponse).setIndex(reaction.getIndex() + 1);
+        } else {
+          reaction.setIndex(1);
+          result.add(reaction);
+        }
+
+      });
+    }
+    return reactionsList;
   }
 
   public PostResponse getChildPosts(String parentId) {

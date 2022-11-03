@@ -44,7 +44,6 @@ public class Post {
   @Transient
   private List<String> usersFavorites;
 
-  @Field
   @Transient
   private List<Reaction> emojis;
   @Transient

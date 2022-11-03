@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface ReactionRepository extends MongoRepository<Reaction, String> {
 
-    //todo group
     List<Reaction> findByPostId(String postId);
 
     Optional<Reaction> findByPostIdAndUserIdAndName(String postId, String userId, String name);

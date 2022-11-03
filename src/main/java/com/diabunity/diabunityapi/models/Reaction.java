@@ -1,5 +1,6 @@
 package com.diabunity.diabunityapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -9,12 +10,12 @@ import java.util.List;
 
 public class Reaction {
 
-    @Id
     @Field
-    @JsonProperty("post_id")
+    @JsonIgnore
     private String postId;
 
     @Field
+    @JsonIgnore
     private String userId;
 
     @Field
