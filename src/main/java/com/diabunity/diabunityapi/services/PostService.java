@@ -53,14 +53,12 @@ public class PostService {
                 Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
-
         Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
 
-        //set quantity of comments && favorites users for each post
         return buildPostsResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()), userId);
     }
 
-    private PostResponse buildPostsResponse(List<Post> posts, Paging paging, String userIdLogged) {
+    private PostResponse buildPostsResponse(List<Post> posts, Paging paging, String userIdRequest) {
         posts.forEach(post -> {
             post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
             post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
@@ -70,7 +68,7 @@ public class PostService {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            post.setEmojis(createReactionResponse(userIdLogged, post.getId()));
+            post.setEmojis(createReactionResponse(userIdRequest, post.getId()));
         });
 
         return new PostResponse(posts, paging);
@@ -101,8 +99,6 @@ public class PostService {
         List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
         return new PostResponse(posts, null);
     }
-
-        // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
 
     public boolean delete(String postId, String userId) {
         Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
