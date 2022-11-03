@@ -19,23 +19,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
 
-  @Autowired
-  private PostRepository postRepository;
+    @Autowired
+    private PostRepository postRepository;
 
-  @Autowired
-  private FavoriteService favoriteService;
+    @Autowired
+    private FavoriteService favoriteService;
 
-  @Autowired
-  private ReactionService reactionService;
-  @Autowired
-  private UserAuthService userAuthService;
+    @Autowired
+    private ReactionService reactionService;
 
-  public Post save(Post p) {
-    postRepository.save(p);
+    @Autowired
+    private UserAuthService userAuthService;
+
+    public Post save(Post p) {
+        postRepository.save(p);
 
     return p;
   }
@@ -108,21 +110,23 @@ public class PostService {
     return result;
   }
 
-  public PostResponse getChildPosts(String parentId) {
-    List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
+      public PostResponse getChildPosts(String parentId) {
+        List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
 
-    return new PostResponse(posts, null);
-  }
+        return new PostResponse(posts, null);
+      }
 
-  public boolean delete(String postId, String userId) {
-    Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
+    // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
 
-    if (!resultDelete.isPresent()) {
-      return false;
+    public boolean delete(String postId, String userId) {
+        Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
+
+        if (!resultDelete.isPresent()) {
+            return false;
+        }
+
+        postRepository.deletePostByParentId(postId);
+        return true;
     }
-
-    postRepository.deletePostByParentId(postId);
-    return true;
-  }
 
 }
