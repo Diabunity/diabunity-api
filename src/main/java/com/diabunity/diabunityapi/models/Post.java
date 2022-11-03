@@ -46,7 +46,7 @@ public class Post {
     private List<Reaction> emojis;
     @Transient
     @JsonProperty("username")
-    private UserRecord user;
+    private String user;
 
     public Post(String id, String userId, String body,
                 LocalDateTime timestamp, String parentId, String image) {
@@ -130,11 +130,11 @@ public class Post {
       this.emojis = emojis;
     }
 
-    public UserRecord getUser() {
+    public String getUser() {
       return user;
     }
 
-    public void setUser(UserRecord user) {
+    public void setUser(String user) {
         this.user = user;
     }
 }

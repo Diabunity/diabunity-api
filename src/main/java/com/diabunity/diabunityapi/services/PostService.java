@@ -19,7 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostService {
@@ -38,85 +37,72 @@ public class PostService {
 
     public Post save(Post p) {
         postRepository.save(p);
-
-    return p;
-  }
-
-  public PostResponse getPrincipalsPosts(int page, int size, String userId) {
-    Pageable pageConfig = PageRequest.of(page, size,
-        Sort.by(Sort.Direction.DESC, "timestamp"));
-
-     Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
-
-   //set quantity of comments && favorites users for each post
-   posts.get().forEach(post -> {
-     post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
-     post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
-
-     try {
-       post.setUser(userAuthService.getUser(post.getUserId()));
-     } catch (Exception e) {
-       throw new RuntimeException(e);
-     }
-     post.setEmojis(createReactionResponse(userId, post.getId()));
-   });
-
-    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
-  }
-
-  public PostResponse getFavoritesPost(int page, int size, String userId) {
-    Pageable pageConfig = PageRequest.of(page, size,
-            Sort.by(Sort.Direction.DESC, "timestamp"));
-
-    List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
-
-    Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
-
-    //set quantity of comments && favorites users for each post
-    posts.get().forEach(post -> {
-      post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
-      post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
-
-      try {
-        post.setUser(userAuthService.getUser(post.getUserId()));
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-      post.setEmojis(createReactionResponse(userId, post.getId()));
-    });
-
-    return new PostResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()));
-
-  }
-
-  private List<Reaction> createReactionResponse(String userId, String postId) {
-    List<Reaction> reactionsList = reactionService.getReactionsByPost(postId);
-    List<Reaction> result = new ArrayList<>();
-    if (reactionsList != null) {
-      reactionsList.stream().forEach(reaction -> {
-        if (reaction.getUserId() == userId) {
-          reaction.setSelected(true);
-        }
-        int indexInResponse = Iterables.indexOf(result, r -> r.getName().equals(reaction.getName()));
-        if(indexInResponse >= 0) {
-          Reaction reactionAux = result.get(indexInResponse);
-          reactionAux.setIndex(reactionAux.getIndex() + 1);
-        } else {
-          reaction.setIndex(1);
-          result.add(reaction);
-        }
-      });
+        return p;
     }
-    return result;
-  }
 
-      public PostResponse getChildPosts(String parentId) {
+    public PostResponse getPrincipalsPosts(int page, int size, String userId) {
+        Pageable pageConfig = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        Page<Post> posts = postRepository.findPostByParentIdIsNull(pageConfig);
+        return buildPostsResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()), userId);
+    }
+
+    public PostResponse getFavoritesPost(int page, int size, String userId) {
+        Pageable pageConfig = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        List<String> postFavorites = favoriteService.getFavoritesPostsByUser(userId);
+
+        Page<Post> posts =  postRepository.findPostByIdIsIn(postFavorites, pageConfig);
+
+        //set quantity of comments && favorites users for each post
+        return buildPostsResponse(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()), userId);
+    }
+
+    private PostResponse buildPostsResponse(List<Post> posts, Paging paging, String userIdLogged) {
+        posts.forEach(post -> {
+            post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
+            post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
+
+            try {
+                post.setUser(userAuthService.getUser(post.getUserId()).getDisplayName());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            post.setEmojis(createReactionResponse(userIdLogged, post.getId()));
+        });
+
+        return new PostResponse(posts, paging);
+    }
+
+    private List<Reaction> createReactionResponse(String userId, String postId) {
+        List<Reaction> reactionsList = reactionService.getReactionsByPost(postId);
+        List<Reaction> result = new ArrayList<>();
+        if (reactionsList != null) {
+          reactionsList.stream().forEach(reaction -> {
+            if (reaction.getUserId() == userId) {
+              reaction.setSelected(true);
+            }
+            int indexInResponse = Iterables.indexOf(result, r -> r.getName().equals(reaction.getName()));
+            if(indexInResponse >= 0) {
+              Reaction reactionAux = result.get(indexInResponse);
+              reactionAux.setIndex(reactionAux.getIndex() + 1);
+            } else {
+              reaction.setIndex(1);
+              result.add(reaction);
+            }
+          });
+        }
+        return result;
+    }
+
+    public PostResponse getChildPosts(String parentId) {
         List<Post> posts = postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
-
         return new PostResponse(posts, null);
-      }
+    }
 
-    // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
+        // buildPostResponse decorates PostsResponse with comments and favorites data. Also adds paging metadata
 
     public boolean delete(String postId, String userId) {
         Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
