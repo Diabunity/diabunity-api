@@ -97,15 +97,15 @@ public class PostService {
         }
         int indexInResponse = Iterables.indexOf(result, r -> r.getName().equals(reaction.getName()));
         if(indexInResponse >= 0) {
-          result.get(indexInResponse).setIndex(reaction.getIndex() + 1);
+          Reaction reactionAux = result.get(indexInResponse);
+          reactionAux.setIndex(reactionAux.getIndex() + 1);
         } else {
           reaction.setIndex(1);
           result.add(reaction);
         }
-
       });
     }
-    return reactionsList;
+    return result;
   }
 
   public PostResponse getChildPosts(String parentId) {
