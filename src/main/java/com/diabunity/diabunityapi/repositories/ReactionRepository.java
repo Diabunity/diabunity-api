@@ -11,7 +11,6 @@ public interface ReactionRepository extends MongoRepository<Reaction, String> {
 
     List<Reaction> findByPostId(String postId);
 
-    Optional<Reaction> findByPostIdAndUserIdAndName(String postId, String userId, String name);
     void deleteByUserIdAndPostIdAndEmoji(String userId, String postId, String emoji);
 
 }

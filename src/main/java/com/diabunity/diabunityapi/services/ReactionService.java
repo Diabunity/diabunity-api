@@ -22,10 +22,6 @@ public class ReactionService {
         return reactionRepository.findByPostId(postId);
     }
 
-    public Optional<Reaction> findReactionPerformed(String postId, String userId, String name) {
-        return reactionRepository.findByPostIdAndUserIdAndName(postId, userId, name);
-    }
-
     public void deleteUserReaction(String userId, String postId, String emoji) {
         reactionRepository.deleteByUserIdAndPostIdAndEmoji(userId, postId, emoji);
     }
