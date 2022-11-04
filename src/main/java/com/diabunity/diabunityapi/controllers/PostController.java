@@ -61,8 +61,9 @@ public class PostController {
   public Object getPosts(HttpServletRequest request,
                          @RequestParam(value = "page", required=false, defaultValue = "0") int page,
                          @RequestParam(value = "size", required=false, defaultValue = "10") int size) throws Exception {
-    PostResponse response = postService.getPrincipalsPosts(page, size);
-    return new ResponseEntity<>(response, HttpStatus.OK);
+      String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+      PostResponse  response = postService.getPrincipalsPosts(page, size, authorizedUser);
+      return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   //get comments
