@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReactionService {
@@ -22,8 +21,8 @@ public class ReactionService {
         return reactionRepository.findByPostId(postId);
     }
 
-    public void deleteUserReaction(String userId, String postId, String emoji) {
-        reactionRepository.deleteByUserIdAndPostIdAndEmoji(userId, postId, emoji);
+    public void deleteUserReaction(String userId, String postId, String name) {
+        reactionRepository.deleteByUserIdAndPostIdAndName(userId, postId, name);
     }
 
 }
