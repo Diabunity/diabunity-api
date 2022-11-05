@@ -81,7 +81,7 @@ public class PostService {
         }
         List<Reaction> result = new ArrayList<>();
         reactionsList.stream().forEach(reaction -> {
-            if (reaction.getUserId() == userId) {
+            if (reaction.getUserId().equals(userId)) {
                 reaction.setSelected(true);
             }
             int indexInResponse = Iterables.indexOf(result, r -> r.getName().equals(reaction.getName()));
