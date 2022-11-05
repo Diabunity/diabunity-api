@@ -88,6 +88,9 @@ public class PostService {
             if(indexInResponse >= 0) {
                 Reaction reactionAux = result.get(indexInResponse);
                 reactionAux.setIndex(reactionAux.getIndex() + 1);
+                if(reaction.isSelected()) {
+                    reactionAux.setSelected(true);
+                }
             } else {
                 reaction.setIndex(1);
                 result.add(reaction);
