@@ -1,15 +1,18 @@
 package com.diabunity.diabunityapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class MeasurementsRequest {
     List<Measurement> measurements;
 
-    int[] trend;
+    @JsonProperty("trend_history")
+    int[] trendHistory;
 
-    public MeasurementsRequest(List<Measurement> measurements, int[] trend) {
+    public MeasurementsRequest(List<Measurement> measurements, int[] trendHistory) {
         this.measurements = measurements;
-        this.trend = trend;
+        this.trendHistory = trendHistory;
     }
 
     public List<Measurement> getMeasurements() {
@@ -20,11 +23,11 @@ public class MeasurementsRequest {
         this.measurements = measurements;
     }
 
-    public int[] getTrend() {
-        return trend;
+    public int[] getTrendHistory() {
+        return trendHistory;
     }
 
-    public void setTrend(int[] trend) {
-        this.trend = trend;
+    public void setTrendHistory(int[] trendHistory) {
+        this.trendHistory = trendHistory;
     }
 }
