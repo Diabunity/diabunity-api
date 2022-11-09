@@ -60,7 +60,7 @@ public class MeasurementService {
             return Tendency.RISING_QUICKLY;
         } else if (followingMeasurePredicted > lastMeasure + 1) {
             return Tendency.RISING;
-        } else if (followingMeasurePredicted > lastMeasure) {
+        } else if (followingMeasurePredicted >= lastMeasure) {
             return Tendency.CHANGING_SLOWLY;
         } else if (lastMeasure > followingMeasurePredicted + 2) {
             return Tendency.FAILING_QUICKLY;

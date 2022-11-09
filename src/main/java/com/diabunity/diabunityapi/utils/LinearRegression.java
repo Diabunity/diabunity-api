@@ -31,7 +31,7 @@ public class LinearRegression {
         int[] x = new int[n];
 
         for (int i = 0; i < n; i++) {
-            x[i] = i + 1;
+            x[i] = i;
         }
 
         // first pass
