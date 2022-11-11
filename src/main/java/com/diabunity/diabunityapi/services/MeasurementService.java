@@ -2,6 +2,7 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
+import com.diabunity.diabunityapi.utils.LinearRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +49,30 @@ public class MeasurementService {
         updateInTargetForRanking(userID, measurements);
 
         return measurementsToSave;
+    }
+
+    public Tendency calculateTendency(int[] trend) {
+        if (trend == null || trend.length == 0) {
+            return null;
+        }
+
+        LinearRegression linearRegression = new LinearRegression(trend);
+
+        double followingMeasurePredicted = linearRegression.predict(15);
+        int lastMeasure = trend[trend.length - 1];
+        if (followingMeasurePredicted > lastMeasure + 2) {
+            return Tendency.RISING_QUICKLY;
+        } else if (followingMeasurePredicted > lastMeasure + 1) {
+            return Tendency.RISING;
+        } else if (followingMeasurePredicted >= lastMeasure) {
+            return Tendency.CHANGING_SLOWLY;
+        } else if (lastMeasure > followingMeasurePredicted + 2) {
+            return Tendency.FAILING_QUICKLY;
+        } else if (lastMeasure > followingMeasurePredicted) {
+            return Tendency.FAILING;
+        }
+
+        return null;
     }
 
     private List<Measurement> filterDuplicatedMeasurements(List<Measurement> measurements) {
@@ -112,7 +137,7 @@ public class MeasurementService {
             return MeasurementStatus.OK;
     }
 
-    public MeasurementAverage average(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
+    private MeasurementAverage average(List<Measurement> measurements, Double minGlucose, Double maxGlucose) {
         Long count = measurements.stream().count();
         Double sum = measurements.stream().mapToDouble(n -> n.getMeasurement()).sum();
 
@@ -121,7 +146,7 @@ public class MeasurementService {
         return new MeasurementAverage(avg, calculateStatus(avg, minGlucose, maxGlucose));
     }
 
-    public PeriodInTarget calculatePeriodInTarget(List<Measurement> measurements) {
+    private PeriodInTarget calculatePeriodInTarget(List<Measurement> measurements) {
         Long measurementsOK = measurements.stream().filter(m -> m.getStatus() == MeasurementStatus.OK).count();
         double periodInTargetValue = measurementsOK / Double.valueOf(measurements.size());
         return new PeriodInTarget(periodInTargetValue);
