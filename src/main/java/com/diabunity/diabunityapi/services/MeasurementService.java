@@ -52,6 +52,10 @@ public class MeasurementService {
     }
 
     public Tendency calculateTendency(int[] trend) {
+        if (trend == null || trend.length == 0) {
+            return null;
+        }
+
         LinearRegression linearRegression = new LinearRegression(trend);
 
         double followingMeasurePredicted = linearRegression.predict(15);
