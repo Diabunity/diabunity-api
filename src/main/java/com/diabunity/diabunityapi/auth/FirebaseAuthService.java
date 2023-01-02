@@ -1,6 +1,5 @@
 package com.diabunity.diabunityapi.auth;
 
-import com.diabunity.diabunityapi.DiabunityApiApplication;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -17,9 +16,8 @@ public class FirebaseAuthService {
     @Primary
     @Bean
     public FirebaseApp getFirebaseApp() throws IOException {
-        ClassLoader classloader = DiabunityApiApplication.class.getClassLoader();
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(classloader.getResourceAsStream("diabunity-dev-firebase-adminsdk-bg41i-bf2a2eb992.json")))
+        FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.getApplicationDefault())
                 .build();
 
         FirebaseApp.initializeApp(options);
