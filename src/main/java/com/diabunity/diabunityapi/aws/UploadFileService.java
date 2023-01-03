@@ -15,7 +15,7 @@ import static org.apache.commons.codec.binary.Base64.decodeBase64;
 @Service
 public class UploadFileService {
 
-    private static String BUCKET_NAME = "elasticbeanstalk-us-east-1-999156988530";
+    private static String BUCKET_NAME = System.getenv("S3_IMAGES_NAME");
 
     public void base64(String base64Data, String filename) {
         byte[] bI = decodeBase64((base64Data.substring(base64Data.indexOf(",") + 1))
