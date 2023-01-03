@@ -87,7 +87,9 @@ public class PostService {
         List<Post> posts = fetchChildPosts(parentId);
         posts.forEach(post -> {
             try {
-                post.setUser(userAuthService.getUser(post.getUserId()).getDisplayName());
+                UserRecord userFirebase = (userAuthService.getUser(post.getUserId()));
+                post.setUser(userFirebase.getDisplayName());
+                post.setImage(userFirebase.getPhotoUrl());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
