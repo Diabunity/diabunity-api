@@ -8,6 +8,7 @@ import com.diabunity.diabunityapi.models.PostResponse;
 import com.diabunity.diabunityapi.models.Reaction;
 import com.diabunity.diabunityapi.repositories.PostRepository;
 import com.google.common.collect.Iterables;
+import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +40,7 @@ public class PostService {
     private UploadFileService uploadFileService;
 
     public Post save(Post p) {
-        if (!p.getImage().isEmpty()) {
+        if (p.getImage() != null && !p.getImage().isEmpty()) {
             LocalDateTime now = LocalDateTime.now();
             String fileName = "resources/images/" + now.getYear() + "/" + now.getMonthValue() + "/" + p.getId() + now + ".png";
             uploadFileService.base64(p.getImage(), fileName);
@@ -100,7 +101,9 @@ public class PostService {
             post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
             try {
-                post.setUser(userAuthService.getUser(post.getUserId()).getDisplayName());
+                UserRecord userFirebase = (userAuthService.getUser(post.getUserId()));
+                post.setUser(userFirebase.getDisplayName());
+                post.setImage(userFirebase.getPhotoUrl());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
