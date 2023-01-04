@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,10 +40,7 @@ public class PostService {
 
     public Post save(Post p) {
         if (p.getImage() != null && !p.getImage().isEmpty()) {
-            LocalDateTime now = LocalDateTime.now();
-            String fileName = "resources/images/" + now.getYear() + "/" + now.getMonthValue() + "/" + p.getId() + now + ".png";
-            uploadFileService.base64(p.getImage(), fileName);
-            p.setImage(fileName);
+            p.setImage(uploadFileService.base64(p.getImage(), p.getId()));
         }
         return postRepository.save(p);
     }
