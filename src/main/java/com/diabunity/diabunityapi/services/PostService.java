@@ -2,10 +2,7 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.auth.UserAuthService;
 import com.diabunity.diabunityapi.aws.UploadFileService;
-import com.diabunity.diabunityapi.models.Paging;
-import com.diabunity.diabunityapi.models.Post;
-import com.diabunity.diabunityapi.models.PostResponse;
-import com.diabunity.diabunityapi.models.Reaction;
+import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.PostRepository;
 import com.google.common.collect.Iterables;
 import com.google.firebase.auth.UserRecord;
@@ -39,14 +36,15 @@ public class PostService {
     private UploadFileService uploadFileService;
 
     public Post save(Post p) {
-        if (p.getImage() != null && !p.getImage().isEmpty()) {
-            p.setImage(uploadFileService.base64(p.getImage(), p.getId()));
+        if (p.getUserInfo().getImagePath() != null && !p.getUserInfo().getImagePath().isEmpty()) {
+            p.getUserInfo().setImagePath(uploadFileService.base64(p.getUserInfo().getImagePath(), p.getId()));
         }
         return postRepository.save(p);
     }
 
     public boolean delete(String postId, String userId) {
-        Optional<Post> resultDelete = postRepository.deletePostByIdAndUserId(postId, userId);
+        UserInfo userInfo = new UserInfo(userId);
+        Optional<Post> resultDelete = postRepository.deletePostByIdAndUserInfo(postId, userInfo);
 
         if (!resultDelete.isPresent()) {
             return false;
@@ -83,9 +81,9 @@ public class PostService {
         List<Post> posts = fetchChildPosts(parentId);
         posts.forEach(post -> {
             try {
-                UserRecord userFirebase = (userAuthService.getUser(post.getUserId()));
-                post.setUser(userFirebase.getDisplayName());
-                post.setImage(userFirebase.getPhotoUrl());
+                UserRecord userFirebase = (userAuthService.getUser(post.getUserInfo().getUserId()));
+                post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
+                                userFirebase.getPhotoUrl()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -99,9 +97,9 @@ public class PostService {
             post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
             try {
-                UserRecord userFirebase = (userAuthService.getUser(post.getUserId()));
-                post.setUser(userFirebase.getDisplayName());
-                post.setImage(userFirebase.getPhotoUrl());
+                UserRecord userFirebase = (userAuthService.getUser(post.getUserInfo().getUserId()));
+                post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
+                        userFirebase.getPhotoUrl()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
