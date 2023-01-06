@@ -1,7 +1,7 @@
 package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.auth.UserAuthService;
-import com.diabunity.diabunityapi.aws.UploadFileService;
+import com.diabunity.diabunityapi.aws.FileService;
 import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.PostRepository;
 import com.google.common.collect.Iterables;
@@ -33,11 +33,11 @@ public class PostService {
     private UserAuthService userAuthService;
 
     @Autowired
-    private UploadFileService uploadFileService;
+    private FileService fileService;
 
     public Post save(Post p) {
         if (p.getUserInfo().getImagePath() != null && !p.getUserInfo().getImagePath().isEmpty()) {
-            p.getUserInfo().setImagePath(uploadFileService.base64(p.getUserInfo().getImagePath(), p.getId()));
+            p.getUserInfo().setImagePath(fileService.upload(p.getUserInfo().getImagePath(), p.getId()));
         }
         return postRepository.save(p);
     }

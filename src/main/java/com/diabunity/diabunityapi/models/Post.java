@@ -39,6 +39,7 @@ public class Post {
     private List<Reaction> emojis;
 
     @Transient
+    @JsonProperty("user_info")
     private UserInfo userInfo;
 
     public Post(String id, String body,

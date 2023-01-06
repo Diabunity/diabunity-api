@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
 
 @Service
-public class UploadFileService {
+public class FileService {
 
     private static String BUCKET_NAME = System.getenv("S3_BUCKET_NAME");
 
     @Autowired
     private AwsConfiguration awsConfiguration;
 
-    public String base64(String base64Data, String id) {
+    public String upload(String base64Data, String id) {
         LocalDateTime now = LocalDateTime.now();
 
         String path = "resources/images/" + now.getYear() + "/" + now.getMonthValue() + "/" + id + now + ".png";
