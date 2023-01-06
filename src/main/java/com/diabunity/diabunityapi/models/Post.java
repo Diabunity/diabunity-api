@@ -17,10 +17,6 @@ public class Post {
     private String id;
 
     @Field
-    @JsonProperty("user_id")
-    private String userId;
-
-    @Field
     @NotNull(message = "body must not be null.")
     private String body;
 
@@ -30,9 +26,6 @@ public class Post {
     @Field
     @JsonProperty("parent_id")
     private String parentId;
-
-    @Field
-    private String image;
 
     @JsonProperty("qty_comments")
     @Transient
@@ -44,18 +37,18 @@ public class Post {
 
     @Transient
     private List<Reaction> emojis;
-    @Transient
-    @JsonProperty("username")
-    private String user;
 
-    public Post(String id, String userId, String body,
-                LocalDateTime timestamp, String parentId, String image) {
+    @Transient
+    @JsonProperty("user_info")
+    private UserInfo userInfo;
+
+    public Post(String id, String body,
+                LocalDateTime timestamp, String parentId, UserInfo userInfo) {
         this.id = id;
-        this.userId = userId;
         this.body = body;
         this.timestamp = timestamp;
         this.parentId = parentId;
-        this.image = image;
+        this.userInfo = userInfo;
     }
 
     public String getId() {
@@ -64,14 +57,6 @@ public class Post {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getBody() {
@@ -106,13 +91,6 @@ public class Post {
         this.timestamp = timestamp;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public List<String> getUsersFavorites() {
         return usersFavorites;
@@ -130,11 +108,11 @@ public class Post {
       this.emojis = emojis;
     }
 
-    public String getUser() {
-      return user;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

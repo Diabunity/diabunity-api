@@ -4,6 +4,7 @@ import com.diabunity.diabunityapi.exceptions.BadRequestException;
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
+import com.diabunity.diabunityapi.models.UserInfo;
 import com.diabunity.diabunityapi.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,8 @@ public class PostController {
 
         post.setId(UUID.randomUUID().toString());
         post.setTimestamp(LocalDateTime.now());
-        post.setUserId(uid);
+
+        post.getUserInfo().setUserId(uid);
 
         Post postSaved = postService.save(post);
 
