@@ -1,7 +1,7 @@
 package com.diabunity.diabunityapi.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class UserInfo {
@@ -18,11 +18,16 @@ public class UserInfo {
     @JsonProperty("image_path")
     private String imagePath;
 
-    @JsonCreator
-    public UserInfo(String userId, String displayName, String imagePath) {
+    @Transient
+    private boolean verified;
+
+    public UserInfo() {}
+
+    public UserInfo(String userId, String displayName, String imagePath, boolean verified) {
         this.userId = userId;
         this.displayName = displayName;
         this.imagePath = imagePath;
+        this.verified = verified;
     }
 
     public UserInfo(String displayName, String imagePath) {
@@ -57,4 +62,8 @@ public class UserInfo {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public boolean isVerified() { return verified; }
+
+    public void setVerified(boolean verified) { this.verified = verified; }
 }

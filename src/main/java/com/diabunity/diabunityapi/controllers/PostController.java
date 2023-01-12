@@ -44,7 +44,8 @@ public class PostController {
         post.setId(UUID.randomUUID().toString());
         post.setTimestamp(LocalDateTime.now());
 
-        post.getUserInfo().setUserId(uid);
+        UserInfo userInfo = new UserInfo(uid);
+        post.setUserInfo(userInfo);
 
         Post postSaved = postService.save(post);
 

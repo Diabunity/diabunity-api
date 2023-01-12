@@ -2,6 +2,7 @@ package com.diabunity.diabunityapi.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,9 @@ public class User {
     @JsonProperty("glucose_max")
     @NotNull(message = "Glucose max must not be null.")
     private Double glucoseMax;
+
+    @Transient
+    private boolean verified;
 
     public User(String id, DiabetesType diabetesType, Double weight,
                 Double height, Date birthDate, boolean onBoarding,
@@ -114,4 +118,7 @@ public class User {
         return glucoseMax;
     }
 
+    public boolean isVerified() { return verified; }
+
+    public void setVerified(boolean verified) { this.verified = verified; }
 }

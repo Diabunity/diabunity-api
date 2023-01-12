@@ -6,6 +6,7 @@ import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.PostRepository;
 import com.google.common.collect.Iterables;
 import com.google.firebase.auth.UserRecord;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,8 +37,8 @@ public class PostService {
     private FileService fileService;
 
     public Post save(Post p) {
-        if (p.getUserInfo().getImagePath() != null && !p.getUserInfo().getImagePath().isEmpty()) {
-            p.getUserInfo().setImagePath(fileService.upload(p.getUserInfo().getImagePath(), p.getId()));
+        if (p.getImage() != null && !p.getImage().isEmpty()) {
+            p.setImage(fileService.upload(p.getImage(), p.getId()));
         }
         return postRepository.save(p);
     }
@@ -92,14 +93,22 @@ public class PostService {
     }
 
     private PostResponse decoratePosts(List<Post> posts, Paging paging, String userIdRequest) {
+        String[] userVerified = System.getenv("VERIFIED_USERS").split(",");
+
         posts.forEach(post -> {
             post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
             post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
             try {
-                UserRecord userFirebase = (userAuthService.getUser(post.getUserInfo().getUserId()));
+                UserRecord userFirebase = userAuthService.getUser(post.getUserInfo().getUserId());
                 post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
                         userFirebase.getPhotoUrl()));
+
+                boolean isVerifiedUser =
+                        Arrays.stream(userVerified).filter(x -> x.equals(userFirebase.getUid())).count() > 0;
+
+                post.getUserInfo().setVerified(isVerifiedUser);
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
