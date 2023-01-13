@@ -85,6 +85,7 @@ public class PostService {
                 UserRecord userFirebase = (userAuthService.getUser(post.getUserInfo().getUserId()));
                 post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
                                 userFirebase.getPhotoUrl()));
+                post.getUserInfo().setVerified(VerifiedUserService.isVerified(userFirebase.getUid()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -93,8 +94,6 @@ public class PostService {
     }
 
     private PostResponse decoratePosts(List<Post> posts, Paging paging, String userIdRequest) {
-        String[] userVerified = System.getenv("VERIFIED_USERS").split(",");
-
         posts.forEach(post -> {
             post.setQtyComments(getChildPosts(post.getId()).getPosts().size());
             post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
@@ -104,10 +103,7 @@ public class PostService {
                 post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
                         userFirebase.getPhotoUrl()));
 
-                boolean isVerifiedUser =
-                        Arrays.stream(userVerified).filter(x -> x.equals(userFirebase.getUid())).count() > 0;
-
-                post.getUserInfo().setVerified(isVerifiedUser);
+                post.getUserInfo().setVerified(VerifiedUserService.isVerified(userFirebase.getUid()));
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
