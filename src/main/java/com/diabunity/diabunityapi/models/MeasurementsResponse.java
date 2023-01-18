@@ -4,54 +4,70 @@ import java.util.List;
 
 public class MeasurementsResponse {
 
-  private List<Measurement> measurements;
+    private List<Measurement> measurements;
 
-  private MeasurementAverage avg;
+    private MeasurementAverage avg;
 
-  private PeriodInTarget periodInTarget;
+    private PeriodInTarget periodInTarget;
 
-  private int totalPages;
+    private int totalPages;
 
-  private long totalElements;
+    private long totalElements;
 
-  public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg,
-                              PeriodInTarget periodInTarget, int pages, long totalElements) {
-    this.measurements = measurements;
-    this.avg = avg;
-    this.periodInTarget = periodInTarget;
-    this.totalPages = pages;
-    this.totalElements = totalElements;
-  }
+    private Metadata metadata;
 
-  public MeasurementsResponse(List<Measurement> measurements) {
-    this.measurements = measurements;
-  }
+    public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg,
+                                PeriodInTarget periodInTarget, int pages, long totalElements, Metadata metadata) {
+        this.measurements = measurements;
+        this.avg = avg;
+        this.periodInTarget = periodInTarget;
+        this.totalPages = pages;
+        this.totalElements = totalElements;
+        this.metadata = metadata;
+    }
 
-  public List<Measurement> getMeasurements() {
-    return measurements;
-  }
+    public MeasurementsResponse(List<Measurement> measurements) {
+        this.measurements = measurements;
+    }
 
-  public void setMeasurements(List<Measurement> measurements) {
-    this.measurements = measurements;
-  }
+    public List<Measurement> getMeasurements() {
+        return measurements;
+    }
 
-  public MeasurementAverage getAvg() {
-    return avg;
-  }
+    public void setMeasurements(List<Measurement> measurements) {
+        this.measurements = measurements;
+    }
 
-  public void setAvg(MeasurementAverage avg) {
-    this.avg = avg;
-  }
+    public MeasurementAverage getAvg() {
+        return avg;
+    }
 
-  public PeriodInTarget getPeriodInTarget() { return periodInTarget; }
+    public void setAvg(MeasurementAverage avg) {
+        this.avg = avg;
+    }
 
-  public void setPeriodInTarget(PeriodInTarget periodInTarget) { this.periodInTarget = periodInTarget; }
+    public PeriodInTarget getPeriodInTarget() {
+        return periodInTarget;
+    }
 
-  public int getTotalPages() { return totalPages; }
+    public void setPeriodInTarget(PeriodInTarget periodInTarget) {
+        this.periodInTarget = periodInTarget;
+    }
 
-  public void setTotalPages(int totalPages) { this.totalPages = totalPages; }
+    public int getTotalPages() {
+        return totalPages;
+    }
 
-  public long getTotalElements() { return totalElements; }
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
-  public void setTotalElements(long totalElements) { this.totalElements = totalElements; }
+    public long getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
+    }
 }
+

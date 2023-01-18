@@ -45,6 +45,10 @@ public class User {
     @NotNull(message = "Glucose max must not be null.")
     private Double glucoseMax;
 
+    @Field
+    @JsonProperty("subscription_type")
+    private SubscriptionType subscriptionType;
+
     public User(String id, DiabetesType diabetesType, Double weight,
                 Double height, Date birthDate, boolean onBoarding,
                 Double glucoseMin, Double glucoseMax) {
@@ -114,4 +118,11 @@ public class User {
         return glucoseMax;
     }
 
+    public SubscriptionType getSubscriptionType() {
+        return subscriptionType;
+    }
+
+    public void setSubscriptionType(SubscriptionType subscriptionType) {
+        this.subscriptionType = subscriptionType;
+    }
 }

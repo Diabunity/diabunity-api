@@ -123,7 +123,7 @@ public class MeasurementService {
                 average(measurements, minGlucose, maxGlucose),
                 calculatePeriodInTarget(measurements),
                 pageResult.getTotalPages(),
-                pageResult.getTotalElements());
+                pageResult.getTotalElements(), new Metadata(false));
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
