@@ -1,7 +1,6 @@
 package com.diabunity.diabunityapi.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.firebase.auth.UserRecord;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -27,6 +26,9 @@ public class Post {
     @JsonProperty("parent_id")
     private String parentId;
 
+    @Field
+    private String image;
+
     @JsonProperty("qty_comments")
     @Transient
     private int qtyComments;
@@ -38,16 +40,17 @@ public class Post {
     @Transient
     private List<Reaction> emojis;
 
-    @Transient
+    @Field
     @JsonProperty("user_info")
     private UserInfo userInfo;
 
     public Post(String id, String body,
-                LocalDateTime timestamp, String parentId, UserInfo userInfo) {
+                LocalDateTime timestamp, String parentId, String image, UserInfo userInfo) {
         this.id = id;
         this.body = body;
         this.timestamp = timestamp;
         this.parentId = parentId;
+        this.image = image;
         this.userInfo = userInfo;
     }
 
@@ -108,11 +111,13 @@ public class Post {
       this.emojis = emojis;
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
-    }
+    public UserInfo getUserInfo() { return userInfo; }
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
     }
+
+    public String getImage() { return image; }
+
+    public void setImage(String image) { this.image = image; }
 }

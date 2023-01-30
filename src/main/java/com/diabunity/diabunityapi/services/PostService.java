@@ -42,8 +42,8 @@ public class PostService {
     private ConfigurationPlan configurationPlan;
 
     public Post save(Post p) {
-        if (p.getUserInfo().getImagePath() != null && !p.getUserInfo().getImagePath().isEmpty()) {
-            p.getUserInfo().setImagePath(fileService.upload(p.getUserInfo().getImagePath(), p.getId()));
+        if (p.getImage() != null && !p.getImage().isEmpty()) {
+            p.setImage(fileService.upload(p.getImage(), p.getId()));
         }
         return postRepository.save(p);
     }
@@ -90,6 +90,7 @@ public class PostService {
                 UserRecord userFirebase = (userAuthService.getUser(post.getUserInfo().getUserId()));
                 post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
                                 userFirebase.getPhotoUrl()));
+                post.getUserInfo().setVerified(VerifiedUserService.isVerified(userFirebase.getUid()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -103,9 +104,12 @@ public class PostService {
             post.setUsersFavorites(favoriteService.getUsersFavoritesByPost(post.getId()));
 
             try {
-                UserRecord userFirebase = (userAuthService.getUser(post.getUserInfo().getUserId()));
+                UserRecord userFirebase = userAuthService.getUser(post.getUserInfo().getUserId());
                 post.setUserInfo(new UserInfo(userFirebase.getDisplayName(),
                         userFirebase.getPhotoUrl()));
+
+                post.getUserInfo().setVerified(VerifiedUserService.isVerified(userFirebase.getUid()));
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

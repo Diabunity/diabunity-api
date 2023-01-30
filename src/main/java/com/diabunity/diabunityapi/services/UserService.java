@@ -17,7 +17,13 @@ public class UserService {
   }
 
   public Optional<User> getUser(final String id) {
-   return userRepository.findById(id);
+    Optional<User> user = userRepository.findById(id);
+
+    if (user.isPresent()) {
+      user.get().setVerified(VerifiedUserService.isVerified(user.get().getId()));
+    }
+
+   return user;
   }
 
 }
