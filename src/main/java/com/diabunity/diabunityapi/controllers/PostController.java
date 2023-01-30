@@ -41,6 +41,10 @@ public class PostController {
             throw new InvalidUserTokenException();
         }
 
+        if (!postService.isUserAllowedToPost(uid)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         post.setId(UUID.randomUUID().toString());
         post.setTimestamp(LocalDateTime.now());
 
