@@ -27,8 +27,8 @@ public interface PostRepository extends MongoRepository<Post, String> {
 
   void deletePostByParentId(String postId);
 
-  @Query(value = "{'userId': ?0, 'timestamp':{ $gte: ?1, $lte: ?2}}")
-  List<Post> findAllByUserIdAndTimestampBetween(String id,
-                                                LocalDateTime startDate,
-                                                LocalDateTime endDate);
+  @Query(value = "{'userInfo.userId': ?0, 'timestamp':{ $gte: ?1, $lte: ?2}}")
+  List<Post> findPostByUserIdAndTimestampBetween(String id,
+                                                 LocalDateTime startDate,
+                                                 LocalDateTime endDate);
 }

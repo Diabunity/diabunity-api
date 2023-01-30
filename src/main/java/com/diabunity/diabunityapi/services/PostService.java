@@ -157,8 +157,7 @@ public class PostService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
         LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
-        int postOfDayCount = postRepository.findAllByUserIdAndTimestampBetween(userId,todayStart, todayFinish).size();
-
+        int postOfDayCount = postRepository.findPostByUserIdAndTimestampBetween(userId,todayStart, todayFinish).size();
         if (postOfDayCount >= plan.getMaxPostsAllowedOfTheDay()) {
             return false;
         }
