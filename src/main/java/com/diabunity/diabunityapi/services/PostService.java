@@ -3,9 +3,12 @@ package com.diabunity.diabunityapi.services;
 import com.diabunity.diabunityapi.auth.UserAuthService;
 import com.diabunity.diabunityapi.aws.FileService;
 import com.diabunity.diabunityapi.models.*;
+import com.diabunity.diabunityapi.plans.ConfigurationPlan;
+import com.diabunity.diabunityapi.plans.configs.IConfigurationPlan;
 import com.diabunity.diabunityapi.repositories.PostRepository;
 import com.google.common.collect.Iterables;
 import com.google.firebase.auth.UserRecord;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +37,9 @@ public class PostService {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ConfigurationPlan configurationPlan;
 
     public Post save(Post p) {
         if (p.getUserInfo().getImagePath() != null && !p.getUserInfo().getImagePath().isEmpty()) {
@@ -139,6 +145,21 @@ public class PostService {
 
     private List<Post> fetchChildPosts(String parentId) {
         return postRepository.findPostByParentId(parentId, Sort.by(Sort.Direction.DESC, "timestamp"));
+    }
+
+    public boolean isUserAllowedToPost(String userId) {
+        IConfigurationPlan plan =  configurationPlan.getConfiguration(false);
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
+        LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
+        int postOfDayCount = postRepository.findAllByUserIdAndTimestampBetween(userId,todayStart, todayFinish).size();
+
+        if (postOfDayCount >= plan.getMaxPostsAllowedOfTheDay()) {
+            return false;
+        }
+
+        return true;
     }
 
 }
