@@ -49,9 +49,12 @@ public class User {
     @Transient
     private boolean verified;
 
+    @Field
+    private Subscription subscription;
+
     public User(String id, DiabetesType diabetesType, Double weight,
                 Double height, Date birthDate, boolean onBoarding,
-                Double glucoseMin, Double glucoseMax) {
+                Double glucoseMin, Double glucoseMax, Subscription subscription) {
         this.id = id;
         this.diabetesType = diabetesType;
         this.weight = weight;
@@ -60,6 +63,11 @@ public class User {
         this.onBoarding = onBoarding;
         this.glucoseMin = glucoseMin;
         this.glucoseMax = glucoseMax;
+        if (subscription == null) {
+            this.subscription = new Subscription(SubscriptionType.FREE, null);
+        } else {
+            this.subscription = subscription;
+        }
     }
 
     public String getId() {
@@ -121,4 +129,12 @@ public class User {
     public boolean isVerified() { return verified; }
 
     public void setVerified(boolean verified) { this.verified = verified; }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
 }
