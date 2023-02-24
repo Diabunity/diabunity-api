@@ -36,7 +36,7 @@ public class UserService {
   public void setUserConfigsAccordingToPlan(User user) {
     SubscriptionType userSubscriptionType = user.getSubscription().getSubscriptionType();
     IConfigurationPlan plan = configurationPlan.getConfiguration(userSubscriptionType);
-    user.getSubscription().setConfigs(plan.getConfigAccordingPlan());
+    user.getSubscription().setMetadata(plan.getConfigAccordingPlan());
   }
 
 

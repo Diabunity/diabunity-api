@@ -11,11 +11,11 @@ public class Subscription {
     private SubscriptionType subscriptionType;
 
     @Field
-    private List<SubscriptionConfigs> configs;
+    private List<SubscriptionConfigs> metadata;
 
-    public Subscription(SubscriptionType subscriptionType, List<SubscriptionConfigs> configs) {
+    public Subscription(SubscriptionType subscriptionType, List<SubscriptionConfigs> metadata) {
         this.subscriptionType = subscriptionType;
-        this.configs = configs;
+        this.metadata = metadata;
     }
 
     public SubscriptionType getSubscriptionType() {
@@ -26,11 +26,11 @@ public class Subscription {
         this.subscriptionType = subscriptionType;
     }
 
-    public List<SubscriptionConfigs> getConfigs() {
-        return configs;
+    public List<SubscriptionConfigs> getMetadata() {
+        return metadata;
     }
 
-    public void setConfigs(List<SubscriptionConfigs> configs) {
-        this.configs = configs;
+    public void setMetadata(List<SubscriptionConfigs> metadata) {
+        this.metadata = metadata;
     }
 }
