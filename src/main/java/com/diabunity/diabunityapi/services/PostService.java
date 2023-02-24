@@ -152,13 +152,14 @@ public class PostService {
     }
 
     public boolean isUserAllowedToPost(String userId) {
-        IConfigurationPlan plan =  configurationPlan.getConfiguration(false);
+        IConfigurationPlan plan =  configurationPlan.getConfiguration(SubscriptionType.FREE);
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
         LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
         int postOfDayCount = postRepository.findPostByUserIdAndTimestampBetween(userId,todayStart, todayFinish).size();
-        if (postOfDayCount >= plan.getMaxPostsAllowedOfTheDay()) {
+
+        if (postOfDayCount >= plan.getMaxPostsPerDay()) {
             return false;
         }
 
