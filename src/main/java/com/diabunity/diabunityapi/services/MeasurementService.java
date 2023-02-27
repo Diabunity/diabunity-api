@@ -133,7 +133,7 @@ public class MeasurementService {
                 calculatePeriodInTarget(measurements),
                 pageResult.getTotalPages(),
                 pageResult.getTotalElements(),
-                countMeasurement(userID, measurements.size() > 1 ? MeasurementSource.SENSOR : MeasurementSource.MANUAL));
+                countMeasurement(userID, measurements.get(0).getSource()));
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
