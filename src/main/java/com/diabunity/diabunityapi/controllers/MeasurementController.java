@@ -38,7 +38,7 @@ public class MeasurementController {
         List<Measurement> measurements = measurementService.saveAll(measurementsRequest.getMeasurements());
         CreateMeasurementsResponse res = new CreateMeasurementsResponse(measurements,
                 measurementService.calculateTendency(measurementsRequest.getTrendHistory()),
-                measurementService.countMeasurement(uid, measurements.get(0).getSource());
+                measurementService.countMeasurement(uid, measurements.get(0).getSource()));
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
