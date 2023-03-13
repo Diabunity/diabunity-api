@@ -2,7 +2,9 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
+import com.diabunity.diabunityapi.repositories.MeasurementTracingRepository;
 import com.diabunity.diabunityapi.utils.LinearRegression;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,25 +22,32 @@ import java.util.List;
 public class MeasurementService {
 
     private final static int GLUCOSE_GAP_WARNING = 30;
+
     static Long VALID_OFFSET_MINUTES = 15L;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private RankingService rankingService;
+
     @Autowired
     private MeasurementRepository measurementRepository;
+
+    @Autowired
+    private MeasurementTracingRepository measurementTracingRepository;
 
     public List<Measurement> saveAll(List<Measurement> measurements) {
         Collections.sort(measurements, Comparator.comparing(Measurement::getTimestamp));
 
-        String userID = measurements.get(0).getUserId();
+        String userId = measurements.get(0).getUserId();
         List<Measurement> measurementsToSave = filterDuplicatedMeasurements(measurements);
         if (measurementsToSave.isEmpty()) {
             return null;
         }
 
         // calculate the status of each measurement based on the minimum and maximum glucose previously set by the user
-        User user = userService.getUser(userID).get();
+        User user = userService.getUser(userId).get();
 
         final Double minGlucose = user.getMinGlucose();
         final Double maxGlucose = user.getMaxGlucose();
@@ -46,7 +55,7 @@ public class MeasurementService {
         measurements.forEach(m -> m.setStatus(calculateStatus(m.getMeasurement(), minGlucose, maxGlucose)));
 
         measurementRepository.saveAll(measurementsToSave);
-        updateInTargetForRanking(userID, measurements);
+        updateInTargetForRanking(userId, measurements);
 
         return measurementsToSave;
     }
@@ -123,7 +132,8 @@ public class MeasurementService {
                 average(measurements, minGlucose, maxGlucose),
                 calculatePeriodInTarget(measurements),
                 pageResult.getTotalPages(),
-                pageResult.getTotalElements());
+                pageResult.getTotalElements(),
+                countMeasurement(userID, measurements.get(0).getSource()));
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
@@ -150,5 +160,20 @@ public class MeasurementService {
         Long measurementsOK = measurements.stream().filter(m -> m.getStatus() == MeasurementStatus.OK).count();
         double periodInTargetValue = measurementsOK / Double.valueOf(measurements.size());
         return new PeriodInTarget(periodInTargetValue);
+    }
+
+    public MeasurementTracing countMeasurement(String userId, MeasurementSource source) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
+        LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
+
+        List<MeasurementTracing> measurementTracingList = measurementTracingRepository
+                .findAllByUserIdAndTimestampBetweenAndSource(userId, todayStart, todayFinish, source);
+
+        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source, measurementTracingList.size() + 1, now);
+
+        measurementTracingRepository.save(measurementTracing);
+
+        return measurementTracing;
     }
 }

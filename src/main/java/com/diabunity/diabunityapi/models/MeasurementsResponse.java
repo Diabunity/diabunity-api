@@ -14,13 +14,16 @@ public class MeasurementsResponse {
 
   private long totalElements;
 
+  private MeasurementTracing measurementTracing;
+
   public MeasurementsResponse(List<Measurement> measurements, MeasurementAverage avg,
-                              PeriodInTarget periodInTarget, int pages, long totalElements) {
+                              PeriodInTarget periodInTarget, int pages, long totalElements, MeasurementTracing measurementTracing) {
     this.measurements = measurements;
     this.avg = avg;
     this.periodInTarget = periodInTarget;
     this.totalPages = pages;
     this.totalElements = totalElements;
+    this.measurementTracing = measurementTracing;
   }
 
   public MeasurementsResponse(List<Measurement> measurements) {
@@ -54,4 +57,8 @@ public class MeasurementsResponse {
   public long getTotalElements() { return totalElements; }
 
   public void setTotalElements(long totalElements) { this.totalElements = totalElements; }
+
+  public MeasurementTracing getMeasurementTracing() { return measurementTracing; }
+
+  public void setMeasurementTracing(MeasurementTracing measurementTracing) { this.measurementTracing = measurementTracing; }
 }
