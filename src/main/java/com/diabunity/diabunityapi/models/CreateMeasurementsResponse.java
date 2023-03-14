@@ -7,9 +7,9 @@ public class CreateMeasurementsResponse {
 
     Tendency tendency;
 
-    MeasurementTracing measurementTracing;
+    List<MeasurementTracing> measurementTracing;
 
-    public CreateMeasurementsResponse(List<Measurement> measurements, Tendency tendency, MeasurementTracing measurementTracing) {
+    public CreateMeasurementsResponse(List<Measurement> measurements, Tendency tendency, List<MeasurementTracing> measurementTracing) {
         this.measurements = measurements;
         this.tendency = tendency;
         this.measurementTracing = measurementTracing;
@@ -31,7 +31,7 @@ public class CreateMeasurementsResponse {
         this.tendency = tendency;
     }
 
-    public MeasurementTracing getMeasurementTracing() { return measurementTracing; }
+    public List<MeasurementTracing> getMeasurementTracing() { return measurementTracing; }
 
-    public void setMeasurementTracing(MeasurementTracing measurementTracing) { this.measurementTracing = measurementTracing; }
+    public void setMeasurementTracing(List<MeasurementTracing> measurementTracing) { this.measurementTracing = measurementTracing; }
 }

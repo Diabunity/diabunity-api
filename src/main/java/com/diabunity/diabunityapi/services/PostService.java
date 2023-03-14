@@ -68,6 +68,17 @@ public class PostService {
         return decoratePosts(posts.getContent(), new Paging(posts.getTotalPages(), posts.getTotalElements()), userId);
     }
 
+    public int countPostsByUserId(String userId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
+        LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
+
+        List<Post> posts = postRepository
+                .findPostByUserIdAndParentIdIsNullAndTimestampBetween(userId, todayStart, todayFinish);
+
+        return posts.size();
+    }
+
     public PostResponse getFavoritesPost(int page, int size, String userId) {
         Pageable pageConfig = PageRequest.of(page, size,
                 Sort.by(Sort.Direction.DESC, "timestamp"));
@@ -154,10 +165,7 @@ public class PostService {
     public boolean isUserAllowedToPost(String userId) {
         IConfigurationPlan plan =  configurationPlan.getConfiguration(SubscriptionType.FREE);
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
-        LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
-        int postOfDayCount = postRepository.findPostByUserIdAndTimestampBetween(userId,todayStart, todayFinish).size();
+        int postOfDayCount = countPostsByUserId(userId);
 
         if (postOfDayCount >= plan.getMaxPostsPerDay()) {
             return false;
