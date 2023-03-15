@@ -4,8 +4,10 @@ import com.diabunity.diabunityapi.exceptions.BadRequestException;
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.models.PostResponse;
+import com.diabunity.diabunityapi.models.PostsQuantity;
 import com.diabunity.diabunityapi.models.UserInfo;
 import com.diabunity.diabunityapi.services.PostService;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 public class PostController {
@@ -60,8 +61,17 @@ public class PostController {
     @GetMapping("/posts")
     public Object getPosts(HttpServletRequest request,
                            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                           @RequestParam(value = "size", required = false, defaultValue = "10") int size) throws Exception {
+                           @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                           @RequestParam(value = "count", required = false, defaultValue = "false") boolean count) throws Exception {
+
         String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+
+        if (count) {
+            PostsQuantity postsQty = new PostsQuantity(authorizedUser,
+                    postService.countPostsByUserId(authorizedUser));
+            return new ResponseEntity<>(postsQty, HttpStatus.OK);
+        }
+
         PostResponse response = postService.getPrincipalsPosts(page, size, authorizedUser);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

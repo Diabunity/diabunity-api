@@ -4,7 +4,6 @@ import com.diabunity.diabunityapi.models.*;
 import com.diabunity.diabunityapi.repositories.MeasurementRepository;
 import com.diabunity.diabunityapi.repositories.MeasurementTracingRepository;
 import com.diabunity.diabunityapi.utils.LinearRegression;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -162,18 +161,24 @@ public class MeasurementService {
         return new PeriodInTarget(periodInTargetValue);
     }
 
-    public MeasurementTracing countMeasurement(String userId, MeasurementSource source) {
+    public List<MeasurementTracing> countMeasurement(String userId, MeasurementSource source) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
         LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
 
-        List<MeasurementTracing> measurementTracingList = measurementTracingRepository
-                .findAllByUserIdAndTimestampBetweenAndSource(userId, todayStart, todayFinish, source);
-
-        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source, measurementTracingList.size() + 1, now);
-
+        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source,1, now);
         measurementTracingRepository.save(measurementTracing);
 
-        return measurementTracing;
+        List<MeasurementTracing> measurementTracingList = measurementTracingRepository
+                .findAllByUserIdAndTimestampBetween(userId, todayStart, todayFinish);
+
+        long countManual = measurementTracingList.stream().filter(m -> m.getSource() == MeasurementSource.MANUAL).count();
+        long countSensor = measurementTracingList.stream().filter(m -> m.getSource() == MeasurementSource.SENSOR).count();
+
+        List<MeasurementTracing> measurementQty = new ArrayList<>();
+        measurementQty.add(new MeasurementTracing(userId, MeasurementSource.MANUAL, countManual, now));
+        measurementQty.add(new MeasurementTracing(userId, MeasurementSource.SENSOR, countSensor, now));
+
+        return measurementQty;
     }
 }

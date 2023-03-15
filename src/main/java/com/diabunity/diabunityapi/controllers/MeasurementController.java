@@ -4,7 +4,6 @@ package com.diabunity.diabunityapi.controllers;
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.CreateMeasurementsResponse;
 import com.diabunity.diabunityapi.models.Measurement;
-import com.diabunity.diabunityapi.models.MeasurementSource;
 import com.diabunity.diabunityapi.models.MeasurementsRequest;
 import com.diabunity.diabunityapi.models.MeasurementsResponse;
 import com.diabunity.diabunityapi.services.MeasurementService;
@@ -38,7 +37,7 @@ public class MeasurementController {
         List<Measurement> measurements = measurementService.saveAll(measurementsRequest.getMeasurements());
         CreateMeasurementsResponse res = new CreateMeasurementsResponse(measurements,
                 measurementService.calculateTendency(measurementsRequest.getTrendHistory()),
-                measurementService.countMeasurement(uid, measurements.get(0).getSource()));
+                measurementService.countMeasurement(uid, measurementsRequest.getMeasurements().get(0).getSource()));
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }

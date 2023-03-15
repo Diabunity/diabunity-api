@@ -1,25 +1,26 @@
 package com.diabunity.diabunityapi.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class MeasurementTracing {
 
     @Field
-    @JsonProperty("user_id")
+    @JsonIgnore
     private String userId;
 
     @Field
     private MeasurementSource source;
 
-    @Field
-    private int count;
+    private long count;
 
     @Field
+    @JsonIgnore
     private LocalDateTime timestamp;
 
-    public MeasurementTracing(String userId, MeasurementSource source, int count, LocalDateTime timestamp) {
+    public MeasurementTracing(String userId, MeasurementSource source, long count, LocalDateTime timestamp) {
         this.userId = userId;
         this.source = source;
         this.count = count;
@@ -42,11 +43,11 @@ public class MeasurementTracing {
         this.source = source;
     }
 
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(long count) {
         this.count = count;
     }
 
