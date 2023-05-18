@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Repository
 public interface MeasurementRepository extends MongoRepository<Measurement, String> {
@@ -18,6 +19,10 @@ public interface MeasurementRepository extends MongoRepository<Measurement, Stri
                                                          LocalDateTime startDate,
                                                          LocalDateTime endDate,
                                                          Pageable page);
+
+    ArrayList<Measurement> findAllByUserIdAndTimestampBetween(String id,
+                                                              LocalDateTime startDate,
+                                                              LocalDateTime endDate);
 
     Measurement findFirstByUserIdAndSource(String userId, MeasurementSource source, Sort sort);
 }
