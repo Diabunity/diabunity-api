@@ -13,12 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -97,4 +92,25 @@ public class UserController {
     return new ResponseEntity<>(user.get(), HttpStatus.OK);
   }
 
+  @PatchMapping("/users/{id}")
+  public ResponseEntity<User> updateDeviceId(HttpServletRequest request,
+                                             @PathVariable(value="id") String uid,
+                                             @RequestParam(value = "device_id", required = true, defaultValue = "0") String deviceId) throws Exception {
+    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
+    if (!authorizedUser.equals(uid)) {
+      throw new InvalidUserTokenException();
+    }
+
+    Optional<User> userOptional = userService.getUser(uid);
+
+    if (userOptional == null) {
+      throw new NotFoundException("User not found by user_id " + uid);
+    }
+
+    User user = userOptional.get();
+
+    userService.updateDeviceId(user, deviceId);
+
+    return new ResponseEntity<>(user, HttpStatus.OK);
+  }
 }

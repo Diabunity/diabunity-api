@@ -39,5 +39,9 @@ public class UserService {
     user.getSubscription().setMetadata(plan.getConfigAccordingPlan());
   }
 
+  public void updateDeviceId(final User user, final String deviceId) {
+    user.setDeviceId(deviceId);
+    saveUser(user);
+  }
 
 }
