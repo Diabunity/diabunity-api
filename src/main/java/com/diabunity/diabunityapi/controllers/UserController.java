@@ -92,25 +92,4 @@ public class UserController {
     return new ResponseEntity<>(user.get(), HttpStatus.OK);
   }
 
-  @PatchMapping("/users/{id}")
-  public ResponseEntity<User> updateDeviceId(HttpServletRequest request,
-                                             @PathVariable(value="id") String uid,
-                                             @RequestParam(value = "device_id", required = true, defaultValue = "0") String deviceId) throws Exception {
-    String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
-    if (!authorizedUser.equals(uid)) {
-      throw new InvalidUserTokenException();
-    }
-
-    Optional<User> userOptional = userService.getUser(uid);
-
-    if (userOptional == null) {
-      throw new NotFoundException("User not found by user_id " + uid);
-    }
-
-    User user = userOptional.get();
-
-    userService.updateDeviceId(user, deviceId);
-
-    return new ResponseEntity<>(user, HttpStatus.OK);
-  }
 }

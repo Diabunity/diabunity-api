@@ -52,12 +52,9 @@ public class User {
     @Field
     private Subscription subscription;
 
-    @Field
-    private String deviceId;
-
     public User(String id, DiabetesType diabetesType, Double weight,
                 Double height, Date birthDate, boolean onBoarding,
-                Double glucoseMin, Double glucoseMax, Subscription subscription, String deviceId) {
+                Double glucoseMin, Double glucoseMax, Subscription subscription) {
         this.id = id;
         this.diabetesType = diabetesType;
         this.weight = weight;
@@ -71,7 +68,6 @@ public class User {
         } else {
             this.subscription = subscription;
         }
-        this.deviceId = deviceId;
     }
 
     public String getId() {
@@ -142,11 +138,4 @@ public class User {
         this.subscription = subscription;
     }
 
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
 }
