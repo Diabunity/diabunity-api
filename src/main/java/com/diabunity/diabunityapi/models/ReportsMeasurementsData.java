@@ -1,8 +1,11 @@
 package com.diabunity.diabunityapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class ReportsMeasurementsData {
+    @JsonProperty("metadata")
     private ReportsMeasurementsMetadata reportsMeasurementsMetadata;
     private List<ReportsMeasurementResult> results;
 

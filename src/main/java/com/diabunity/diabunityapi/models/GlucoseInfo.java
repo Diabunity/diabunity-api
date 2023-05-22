@@ -2,13 +2,13 @@ package com.diabunity.diabunityapi.models;
 
 public class GlucoseInfo {
     private GlucoseRange low;
-    private GlucoseRange range;
+    private GlucoseRange inRange;
     private GlucoseRange high;
     private GlucoseRange hyper;
 
-    public GlucoseInfo(GlucoseRange low, GlucoseRange range, GlucoseRange high, GlucoseRange hyper) {
+    public GlucoseInfo(GlucoseRange low, GlucoseRange inRange, GlucoseRange high, GlucoseRange hyper) {
         this.low = low;
-        this.range = range;
+        this.inRange = inRange;
         this.high = high;
         this.hyper = hyper;
     }
@@ -23,12 +23,12 @@ public class GlucoseInfo {
         this.low = low;
     }
 
-    public GlucoseRange getRange() {
-        return range;
+    public GlucoseRange getInRange() {
+        return inRange;
     }
 
-    public void setRange(GlucoseRange range) {
-        this.range = range;
+    public void setInRange(GlucoseRange inRange) {
+        this.inRange = inRange;
     }
 
     public GlucoseRange getHigh() {

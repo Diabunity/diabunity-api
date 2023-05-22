@@ -1,8 +1,12 @@
 package com.diabunity.diabunityapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MeasurementsReport {
+    @JsonProperty("user_info")
     ReportsUserData userData;
 
+    @JsonProperty("measurements_info")
     ReportsMeasurementsData measurementsData;
 
     public MeasurementsReport(ReportsUserData userData, ReportsMeasurementsData measurementsData) {
