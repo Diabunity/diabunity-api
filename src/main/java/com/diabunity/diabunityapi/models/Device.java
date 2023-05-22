@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Device {
-    @Id
     @Field
     @JsonProperty("user_id")
     private String userId;

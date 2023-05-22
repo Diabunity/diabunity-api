@@ -2,7 +2,8 @@ package com.diabunity.diabunityapi.services;
 
 import com.diabunity.diabunityapi.models.Device;
 import com.diabunity.diabunityapi.repositories.DeviceRepository;
-import java.util.Optional;
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class DeviceService {
         return deviceRepository.save(device);
     }
 
-    public Optional<Device> getDevice(String userId) {
+    public List<Device> getDevices(String userId) {
         return deviceRepository.findByUserId(userId);
     }
 }

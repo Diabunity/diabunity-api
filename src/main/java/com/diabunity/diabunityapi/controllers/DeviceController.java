@@ -5,6 +5,8 @@ import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.Device;
 import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.services.DeviceService;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +59,7 @@ public class DeviceController {
             throw new InvalidUserTokenException();
         }
 
-        Optional<Device> deviceResponse = deviceService.getDevice(uid);
+        List<Device> deviceResponse = deviceService.getDevices(uid);
 
         return new ResponseEntity<>(deviceResponse, HttpStatus.OK);
     }
