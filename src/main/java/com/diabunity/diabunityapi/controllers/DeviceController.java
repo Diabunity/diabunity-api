@@ -25,8 +25,8 @@ public class DeviceController {
     @Autowired
     private DeviceService deviceService;
 
-    @PostMapping("/users/{id}/device_id")
-    public Object createDevice(HttpServletRequest request,
+    @PostMapping("/users/{id}/devices")
+    public Object addDevice(HttpServletRequest request,
                              @PathVariable(value = "id") String uid,
                              @Valid @RequestBody Device device,
                              BindingResult errors) throws Exception {
@@ -47,8 +47,8 @@ public class DeviceController {
         return new ResponseEntity<>(deviceSaved, HttpStatus.CREATED);
     }
 
-    @GetMapping("/users/{id}/device_id")
-    public Object getPosts(HttpServletRequest request,
+    @GetMapping("/users/{id}/devices")
+    public Object getDevices(HttpServletRequest request,
                            @PathVariable(value = "id") String uid) throws Exception {
 
         String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
