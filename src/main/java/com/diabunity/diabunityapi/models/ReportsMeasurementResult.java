@@ -1,32 +1,30 @@
 package com.diabunity.diabunityapi.models;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 public class ReportsMeasurementResult {
-    private LocalDateTime timestamp;
-    private double value;
+    private LocalDate timestamp;
+    private List<ReportsMeasurementResultData> data;
 
-    public ReportsMeasurementResult(LocalDateTime timestamp, double value) {
+    public ReportsMeasurementResult(LocalDate timestamp, List<ReportsMeasurementResultData> data) {
         this.timestamp = timestamp;
-        this.value = value;
+        this.data = data;
     }
 
-    // Getters and setters
-
-    public LocalDateTime getTimestamp() {
+    public LocalDate getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(LocalDate timestamp) {
         this.timestamp = timestamp;
     }
 
-    public double getValue() {
-        return value;
+    public List<ReportsMeasurementResultData> getData() {
+        return data;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setData(List<ReportsMeasurementResultData> data) {
+        this.data = data;
     }
-
 }
