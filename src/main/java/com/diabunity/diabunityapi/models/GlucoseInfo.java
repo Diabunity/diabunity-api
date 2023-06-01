@@ -1,7 +1,10 @@
 package com.diabunity.diabunityapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class GlucoseInfo {
     private GlucoseRange low;
+    @JsonProperty("in_range")
     private GlucoseRange inRange;
     private GlucoseRange high;
     private GlucoseRange hyper;

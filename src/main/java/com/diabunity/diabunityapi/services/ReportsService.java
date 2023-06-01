@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class ReportsService {
         Map<LocalDate, List<Measurement>> groupedMeasurements = measurements.stream()
                 .collect(groupingBy(m -> m.getTimestamp().toLocalDate()));
 
-        List<ReportsMeasurementResult> results = null;
+        List<ReportsMeasurementResult> results = new ArrayList<>();
         for (Map.Entry<LocalDate, List<Measurement>> e : groupedMeasurements.entrySet()) {
             results.add(new ReportsMeasurementResult(e.getKey(),
                     e.getValue().stream().map(m -> new ReportsMeasurementResultData(m.getTimestamp(), m.getMeasurement())).collect(Collectors.toList())));

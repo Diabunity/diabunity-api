@@ -1,7 +1,10 @@
 package com.diabunity.diabunityapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ReportsMeasurementsMetadata {
     private int low;
+    @JsonProperty("in_range")
     private int inRange;
     private int high;
     private int hyper;
