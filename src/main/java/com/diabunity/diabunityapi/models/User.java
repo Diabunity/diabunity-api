@@ -137,4 +137,5 @@ public class User {
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
     }
+
 }
