@@ -45,7 +45,8 @@ public class MeasurementService {
             return null;
         }
 
-        // calculate the status of each measurement based on the minimum and maximum glucose previously set by the user
+        // calculate the status of each measurement based on the minimum and maximum
+        // glucose previously set by the user
         User user = userService.getUser(userId).get();
 
         final Double minGlucose = user.getMinGlucose();
@@ -86,15 +87,18 @@ public class MeasurementService {
     private List<Measurement> filterDuplicatedMeasurements(List<Measurement> measurements) {
         String userID = measurements.get(0).getUserId();
         Measurement lastMeasurementSaved = measurementRepository
-                .findFirstByUserIdAndSource(userID, MeasurementSource.SENSOR, Sort.by(Sort.Direction.DESC, "timestamp"));
+                .findFirstByUserIdAndSource(userID, MeasurementSource.SENSOR,
+                        Sort.by(Sort.Direction.DESC, "timestamp"));
 
         List<Measurement> measurementsToSave = new ArrayList<>();
 
         for (Measurement m : measurements) {
             if (lastMeasurementSaved == null
                     || m.getSource().equals(MeasurementSource.MANUAL)
-                    || (lastMeasurementSaved.getTimestamp().plusMinutes(VALID_OFFSET_MINUTES).isBefore(m.getTimestamp()))
-                    || lastMeasurementSaved.getTimestamp().plusMinutes(VALID_OFFSET_MINUTES).isEqual(m.getTimestamp())) {
+                    || (lastMeasurementSaved.getTimestamp().plusMinutes(VALID_OFFSET_MINUTES)
+                            .isBefore(m.getTimestamp()))
+                    || lastMeasurementSaved.getTimestamp().plusMinutes(VALID_OFFSET_MINUTES)
+                            .isEqual(m.getTimestamp())) {
                 measurementsToSave.add(m);
                 lastMeasurementSaved = m;
             }
@@ -107,14 +111,17 @@ public class MeasurementService {
         Integer month = measurements.get(0).getTimestamp().getMonth().getValue();
         Long measurementsOK = measurements.stream().filter(m -> m.getStatus() == MeasurementStatus.OK).count();
         Integer totalMeasurements = measurements.size();
-        rankingService.updateMeasuresInTargetForUserInMonth(userID, month, Math.toIntExact(measurementsOK), totalMeasurements);
+        rankingService.updateMeasuresInTargetForUserInMonth(userID, month, Math.toIntExact(measurementsOK),
+                totalMeasurements);
     }
 
-    public MeasurementsResponse getAllByUserId(String userID, LocalDateTime from, LocalDateTime to, int page, int size) {
+    public MeasurementsResponse getAllByUserId(String userID, LocalDateTime from, LocalDateTime to, int page,
+            int size) {
         Pageable pageConfig = PageRequest.of(page, size,
                 Sort.by(Sort.Direction.DESC, "timestamp"));
 
-        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userID, from, to, pageConfig);
+        Page<Measurement> pageResult = measurementRepository.findAllByUserIdAndTimestampBetween(userID, from, to,
+                pageConfig);
 
         List<Measurement> measurements = pageResult.getContent();
 
@@ -163,17 +170,19 @@ public class MeasurementService {
 
     public List<MeasurementTracing> countMeasurement(String userId, MeasurementSource source) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
+        LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
         LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
 
-        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source,1, now);
+        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source, 1, now);
         measurementTracingRepository.save(measurementTracing);
 
         List<MeasurementTracing> measurementTracingList = measurementTracingRepository
                 .findAllByUserIdAndTimestampBetween(userId, todayStart, todayFinish);
 
-        long countManual = measurementTracingList.stream().filter(m -> m.getSource() == MeasurementSource.MANUAL).count();
-        long countSensor = measurementTracingList.stream().filter(m -> m.getSource() == MeasurementSource.SENSOR).count();
+        long countManual = measurementTracingList.stream().filter(m -> m.getSource() == MeasurementSource.MANUAL)
+                .count();
+        long countSensor = measurementTracingList.stream().filter(m -> m.getSource() == MeasurementSource.SENSOR)
+                .count();
 
         List<MeasurementTracing> measurementQty = new ArrayList<>();
         measurementQty.add(new MeasurementTracing(userId, MeasurementSource.MANUAL, countManual, now));

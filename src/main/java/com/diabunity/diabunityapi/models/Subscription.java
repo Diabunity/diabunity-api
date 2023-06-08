@@ -19,7 +19,9 @@ public class Subscription {
     }
 
     public SubscriptionType getSubscriptionType() {
-        return subscriptionType;
+        // TODO: remove this when subscription plans are implemented
+        return SubscriptionType.PREMIUM;
+        // return subscriptionType;
     }
 
     public void setSubscriptionType(SubscriptionType subscriptionType) {
