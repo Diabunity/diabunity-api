@@ -58,5 +58,4 @@ public class MeasurementController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 }
