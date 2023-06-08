@@ -30,11 +30,13 @@ public class UserService {
       setUserConfigsAccordingToPlan(user.get());
     }
 
-   return user;
+    return user;
   }
 
   public void setUserConfigsAccordingToPlan(User user) {
-    SubscriptionType userSubscriptionType = user.getSubscription().getSubscriptionType();
+    //TODO: Uncomment this line and remove the next one when the subscription logic is implemented
+    // SubscriptionType userSubscriptionType = user.getSubscription().getSubscriptionType();
+    SubscriptionType userSubscriptionType = SubscriptionType.PREMIUM;
     IConfigurationPlan plan = configurationPlan.getConfiguration(userSubscriptionType);
     user.getSubscription().setMetadata(plan.getConfigAccordingPlan());
   }
