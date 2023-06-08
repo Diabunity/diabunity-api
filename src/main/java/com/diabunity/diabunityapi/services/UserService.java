@@ -39,5 +39,4 @@ public class UserService {
     user.getSubscription().setMetadata(plan.getConfigAccordingPlan());
   }
 
-
 }
