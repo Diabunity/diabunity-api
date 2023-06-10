@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
+
 public class Device {
     @Field
     @JsonProperty("user_id")
@@ -20,11 +22,15 @@ public class Device {
     @Field
     private String brand;
 
+    @Field
+    private LocalDateTime timestamp;
+
     public Device(String deviceId, String userId, String osVersion, String brand) {
         this.deviceId = deviceId;
         this.userId = userId;
         this.osVersion = osVersion;
         this.brand = brand;
+        this.timestamp = LocalDateTime.now();
     }
 
     public String getDeviceId() {
@@ -51,6 +57,10 @@ public class Device {
         this.brand = brand;
     }
 
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -58,6 +68,5 @@ public class Device {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
 
 }

@@ -20,4 +20,8 @@ public class DeviceService {
     public List<Device> getDevices(String userId) {
         return deviceRepository.findByUserId(userId);
     }
+
+    public Device findByUserIdAndDeviceId(String userId, String deviceId) {
+        return deviceRepository.findByUserIdAndDeviceId(userId, deviceId);
+    }
 }

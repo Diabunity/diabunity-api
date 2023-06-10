@@ -3,11 +3,10 @@ package com.diabunity.diabunityapi.controllers;
 import com.diabunity.diabunityapi.exceptions.BadRequestException;
 import com.diabunity.diabunityapi.exceptions.InvalidUserTokenException;
 import com.diabunity.diabunityapi.models.Device;
-import com.diabunity.diabunityapi.models.Post;
 import com.diabunity.diabunityapi.services.DeviceService;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -29,9 +28,9 @@ public class DeviceController {
 
     @PostMapping("/users/{id}/devices")
     public Object addDevice(HttpServletRequest request,
-                             @PathVariable(value = "id") String uid,
-                             @Valid @RequestBody Device device,
-                             BindingResult errors) throws Exception {
+            @PathVariable(value = "id") String uid,
+            @Valid @RequestBody Device device,
+            BindingResult errors) throws Exception {
 
         if (errors.hasErrors()) {
             throw new BadRequestException("Parameters required but not found",
@@ -44,14 +43,22 @@ public class DeviceController {
             throw new InvalidUserTokenException();
         }
 
-        device.setUserId(uid);
-        Device deviceSaved = deviceService.save(device);
-        return new ResponseEntity<>(deviceSaved, HttpStatus.CREATED);
+        Device existingDevice = deviceService.findByUserIdAndDeviceId(uid, device.getDeviceId());
+
+        if (existingDevice != null) {
+            existingDevice.setTimestamp(LocalDateTime.now());
+            Device updatedDevice = deviceService.save(existingDevice);
+            return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
+        } else {
+            device.setUserId(uid);
+            Device deviceSaved = deviceService.save(device);
+            return new ResponseEntity<>(deviceSaved, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/users/{id}/devices")
     public Object getDevices(HttpServletRequest request,
-                           @PathVariable(value = "id") String uid) throws Exception {
+            @PathVariable(value = "id") String uid) throws Exception {
 
         String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
 
