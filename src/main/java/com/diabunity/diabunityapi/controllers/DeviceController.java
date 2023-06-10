@@ -43,17 +43,14 @@ public class DeviceController {
             throw new InvalidUserTokenException();
         }
 
-        Device existingDevice = deviceService.findByUserIdAndDeviceId(uid, device.getDeviceId());
+        boolean isNewDevice = deviceService.addOrUpdateDevice(uid, device);
 
-        if (existingDevice != null) {
-            existingDevice.setTimestamp(LocalDateTime.now());
-            Device updatedDevice = deviceService.save(existingDevice);
-            return new ResponseEntity<>(updatedDevice, HttpStatus.OK);
+        if (isNewDevice) {
+            return new ResponseEntity<>(device, HttpStatus.CREATED);
         } else {
-            device.setUserId(uid);
-            Device deviceSaved = deviceService.save(device);
-            return new ResponseEntity<>(deviceSaved, HttpStatus.CREATED);
+            return new ResponseEntity<>(device, HttpStatus.OK);
         }
+
     }
 
     @GetMapping("/users/{id}/devices")

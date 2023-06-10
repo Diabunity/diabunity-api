@@ -3,6 +3,7 @@ package com.diabunity.diabunityapi.services;
 import com.diabunity.diabunityapi.models.Device;
 import com.diabunity.diabunityapi.repositories.DeviceRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,17 @@ public class DeviceService {
         return deviceRepository.findByUserId(userId);
     }
 
-    public Device findByUserIdAndDeviceId(String userId, String deviceId) {
-        return deviceRepository.findByUserIdAndDeviceId(userId, deviceId);
+    public boolean addOrUpdateDevice(String userId, Device device) {
+        Device existingDevice = deviceRepository.findByUserIdAndDeviceId(userId, device.getDeviceId());
+
+        if (existingDevice != null) {
+            existingDevice.setTimestamp(LocalDateTime.now());
+            save(existingDevice);
+            return false;
+        } else {
+            device.setUserId(userId);
+            save(device);
+            return true;
+        }
     }
 }
