@@ -24,15 +24,16 @@ public class DeviceService {
 
     public boolean addOrUpdateDevice(String userId, Device device) {
         Device existingDevice = deviceRepository.findByUserIdAndDeviceId(userId, device.getDeviceId());
+        boolean isNewDevice = false;
 
         if (existingDevice != null) {
             existingDevice.setTimestamp(LocalDateTime.now());
-            save(existingDevice);
-            return false;
         } else {
+            existingDevice = device;
             device.setUserId(userId);
-            save(device);
-            return true;
+            isNewDevice = true;
         }
+        save(existingDevice);
+        return isNewDevice;
     }
 }

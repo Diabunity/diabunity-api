@@ -47,9 +47,8 @@ public class DeviceController {
 
         if (isNewDevice) {
             return new ResponseEntity<>(device, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(device, HttpStatus.OK);
         }
+        return new ResponseEntity<>(device, HttpStatus.OK);
 
     }
 
