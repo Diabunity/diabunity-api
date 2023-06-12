@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface DeviceRepository extends MongoRepository<Device, String> {
     List<Device> findByUserId(String userId);
+
+    Device findByUserIdAndDeviceId(String userId, String deviceId);
 }
