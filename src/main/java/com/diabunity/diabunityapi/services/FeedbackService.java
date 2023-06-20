@@ -13,6 +13,7 @@ public class FeedbackService {
 
     public Feedback saveFeedback(String userId, Feedback feedback) {
         feedback.setUserId(userId);
+        feedback.setTimestamp(java.time.LocalDateTime.now());
         return feedbackRepository.save(feedback);
     }
 }
