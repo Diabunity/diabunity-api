@@ -1,6 +1,6 @@
 package com.diabunity.diabunityapi.models;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -24,7 +24,7 @@ public class Feedback {
 
     @Field
     @JsonProperty("timestamp")
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -38,7 +38,7 @@ public class Feedback {
         this.stars = stars;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -54,7 +54,7 @@ public class Feedback {
         return this.stars;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Instant getTimestamp() {
         return this.timestamp;
     }
 

@@ -1,5 +1,7 @@
 package com.diabunity.diabunityapi.services;
 
+import java.time.Instant;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,7 @@ public class FeedbackService {
 
     public Feedback saveFeedback(String userId, Feedback feedback) {
         feedback.setUserId(userId);
-        feedback.setTimestamp(java.time.LocalDateTime.now());
+        feedback.setTimestamp(Instant.now());
         return feedbackRepository.save(feedback);
     }
 }
