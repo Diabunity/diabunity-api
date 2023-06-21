@@ -49,6 +49,10 @@ public class Device {
         return osVersion;
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
     }
