@@ -132,7 +132,7 @@ public class MeasurementService {
                 calculatePeriodInTarget(measurements),
                 pageResult.getTotalPages(),
                 pageResult.getTotalElements(),
-                countMeasurement(userID, measurements.get(0).getSource()));
+                countMeasurementTrace(userID));
     }
 
     private MeasurementStatus calculateStatus(Double actualGlucose, Double minGlucose, Double maxGlucose) {
@@ -161,13 +161,17 @@ public class MeasurementService {
         return new PeriodInTarget(periodInTargetValue);
     }
 
-    public List<MeasurementTracing> countMeasurement(String userId, MeasurementSource source) {
+    public List<MeasurementTracing> saveAndCountMeasurementTrace(String userId, MeasurementSource source) {
+        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source,1, LocalDateTime.now());
+        measurementTracingRepository.save(measurementTracing);
+
+        return countMeasurementTrace(userId);
+    }
+
+    public List<MeasurementTracing> countMeasurementTrace(String userId) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime todayStart = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),0,0);
         LocalDateTime todayFinish = todayStart.withHour(23).withMinute(59);
-
-        MeasurementTracing measurementTracing = new MeasurementTracing(userId, source,1, now);
-        measurementTracingRepository.save(measurementTracing);
 
         List<MeasurementTracing> measurementTracingList = measurementTracingRepository
                 .findAllByUserIdAndTimestampBetween(userId, todayStart, todayFinish);
