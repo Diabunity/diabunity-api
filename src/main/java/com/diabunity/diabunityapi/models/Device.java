@@ -1,16 +1,20 @@
 package com.diabunity.diabunityapi.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
+@Document
 public class Device {
     @Field
     @JsonProperty("user_id")
     private String userId;
 
+    @Id
     @Field
     @JsonProperty("device_id")
     private String deviceId;
