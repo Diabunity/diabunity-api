@@ -16,11 +16,11 @@ public class Device {
 
     @Id
     @Field
-    @JsonProperty("device_id")
+    @JsonProperty("deviceId")
     private String deviceId;
 
     @Field
-    @JsonProperty("os_version")
+    @JsonProperty("osVersion")
     private String osVersion;
 
     @Field
