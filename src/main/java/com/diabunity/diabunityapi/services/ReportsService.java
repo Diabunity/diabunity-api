@@ -32,7 +32,8 @@ public class ReportsService {
     @Autowired
     private UserAuthService userAuthService;
 
-    public MeasurementsReport getDataForMeasurementsReport(String userID, LocalDateTime from, LocalDateTime to) throws Exception {
+    public MeasurementsReport getDataForMeasurementsReport(String userID, LocalDateTime from, LocalDateTime to)
+            throws Exception {
         Optional<User> user = userRepository.findById(userID);
         if (!user.isPresent()) {
             throw new UserNotFoundException("user not found");
@@ -49,7 +50,9 @@ public class ReportsService {
         List<ReportsMeasurementResult> results = new ArrayList<>();
         for (Map.Entry<LocalDate, List<Measurement>> e : groupedMeasurements.entrySet()) {
             results.add(new ReportsMeasurementResult(e.getKey(),
-                    e.getValue().stream().map(m -> new ReportsMeasurementResultData(m.getTimestamp(), m.getMeasurement())).collect(Collectors.toList())));
+                    e.getValue().stream()
+                            .map(m -> new ReportsMeasurementResultData(m.getTimestamp(), m.getMeasurement()))
+                            .collect(Collectors.toList())));
         }
 
         ReportsMeasurementsMetadata metadata = buildMeasurementsMetadata(u, measurements);
@@ -71,20 +74,30 @@ public class ReportsService {
                 new GlucoseRange(0D, u.getMinGlucose()),
                 new GlucoseRange(u.getMinGlucose(), u.getMaxGlucose()),
                 new GlucoseRange(u.getMaxGlucose(), u.getMaxGlucose() + GLUCOSE_GAP_WARNING),
-                new GlucoseRange(u.getMaxGlucose() + GLUCOSE_GAP_WARNING, null)
-        );
+                new GlucoseRange(u.getMaxGlucose() + GLUCOSE_GAP_WARNING, null));
 
-        return new ReportsUserData(userFirebase.getDisplayName(), age.intValue(), u.getWeight().intValue(), u.getHeight().intValue(), u.getDiabetesType().toValue(), glucoseInfo);
+        return new ReportsUserData(
+                userFirebase.getDisplayName(),
+                age.intValue(),
+                Optional.ofNullable(u.getWeight()).orElse(0.0).intValue(),
+                Optional.ofNullable(u.getHeight()).orElse(0.0).intValue(),
+                Optional.ofNullable(u.getDiabetesType()).map(DiabetesType::toValue)
+                        .orElse(DiabetesType.TYPE1.toValue()),
+                glucoseInfo);
     }
 
     private ReportsMeasurementsMetadata buildMeasurementsMetadata(User u, List<Measurement> measurements) {
         int low = 0, inRange = 0, high = 0, hyper = 0;
 
         for (Measurement m : measurements) {
-            if (m.getMeasurement() < u.getMinGlucose()) low++;
-            else if (m.getMeasurement() > (u.getMaxGlucose() + GLUCOSE_GAP_WARNING)) hyper++;
-            else if (m.getMeasurement() > u.getMaxGlucose()) high++;
-            else inRange++;
+            if (m.getMeasurement() < u.getMinGlucose())
+                low++;
+            else if (m.getMeasurement() > (u.getMaxGlucose() + GLUCOSE_GAP_WARNING))
+                hyper++;
+            else if (m.getMeasurement() > u.getMaxGlucose())
+                high++;
+            else
+                inRange++;
         }
 
         return new ReportsMeasurementsMetadata(low, inRange, high, hyper);
