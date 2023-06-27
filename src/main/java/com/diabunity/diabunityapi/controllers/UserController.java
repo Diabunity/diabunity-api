@@ -23,8 +23,8 @@ public class UserController {
 
   @PostMapping("/users")
   public ResponseEntity<User> createUser(HttpServletRequest request,
-                                         @RequestBody User userData,
-                                         BindingResult errors) throws Exception {
+      @Valid @RequestBody User userData,
+      BindingResult errors) throws Exception {
 
     if (errors.hasErrors()) {
       throw new BadRequestException("Parameters required but not found",
@@ -43,9 +43,9 @@ public class UserController {
 
   @PutMapping("/users/{id}")
   public ResponseEntity<User> updateUser(HttpServletRequest request,
-                                         @PathVariable(value="id") String uid,
-                                         @Valid @RequestBody User userData,
-                                         BindingResult errors) throws Exception {
+      @PathVariable(value = "id") String uid,
+      @Valid @RequestBody User userData,
+      BindingResult errors) throws Exception {
 
     if (errors.hasErrors()) {
       throw new BadRequestException("Parameters required but not found",
@@ -76,7 +76,7 @@ public class UserController {
 
   @GetMapping("/users/{id}")
   public ResponseEntity<User> getUser(HttpServletRequest request,
-                                      @PathVariable(value="id") String uid) throws Exception {
+      @PathVariable(value = "id") String uid) throws Exception {
 
     String authorizedUser = request.getSession().getAttribute("authorized_user").toString();
     if (!authorizedUser.equals(uid)) {
